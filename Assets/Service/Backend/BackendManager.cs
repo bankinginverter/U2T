@@ -20,13 +20,13 @@ namespace U2T
             collection = database.GetCollection<BsonDocument>("testDB");
         }
 
-        public void CreateCharacter(int id, bool status)
+        public void AddData(int id, bool status)
         {
             var document = new BsonDocument { { "id", id }, { "plant", status } };
             collection.InsertOne(document);
         }
 
-        private void GetDataPlayer()
+        private void GetData()
         {
             collection.Find(new BsonDocument()).ForEachAsync(X => Debug.Log(X));
         }
