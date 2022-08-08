@@ -1,5 +1,5 @@
-using System.Collections;
-using System.Collections.Generic;
+using System;
+using System.Text;
 using UnityEngine;
 using MongoDB.Driver;
 using MongoDB.Bson;
@@ -22,7 +22,7 @@ namespace U2T
 
         public void AddData(string username, string password)
         {
-            var document = new BsonDocument { { "username", username }, { "password", password } };
+            var document = new BsonDocument { { "username", username }, { "password", EncodePassword(password)} };
             collection.InsertOne(document);
         }
 
@@ -35,6 +35,12 @@ namespace U2T
         {
             var document = new BsonDocument { { "name", "bank" }};
             collection.DeleteOne(document);
+        }
+
+        private string EncodePassword(string password)
+        {
+            byte[] passwordEncode = Encoding.UTF8.GetBytes(password);
+            return Convert.ToBase64String(passwordEncode);
         }
     }
 }
