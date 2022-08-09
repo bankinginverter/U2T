@@ -4,6 +4,7 @@ using UnityEngine;
 using MongoDB.Driver;
 using MongoDB.Bson;
 using MongoDB.Bson.IO;
+using System;
 
 namespace U2T
 {
@@ -26,9 +27,12 @@ namespace U2T
             collection.InsertOne(document);
         }
 
-        public void GetData()
+        public void FilterData(string username, string password)
         {
-            collection.Find(new BsonDocument()).ForEachAsync(X => Debug.Log(X));
+            //collection.Find(new BsonDocument()).ForEachAsync(X => Debug.Log(X));   
+            var filter = Builders<BsonDocument>.Filter.Eq(username,password);
+            var result = collection.Find(filter).FirstOrDefault();
+            Debug.Log(result);
         }
 
         public void RemoveData(string username, string password)
