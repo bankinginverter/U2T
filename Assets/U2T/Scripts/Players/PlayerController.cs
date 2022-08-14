@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using U2T.Keyboard;
 
-public class PlayerMove : MonoBehaviour
+public class PlayerController : MonoBehaviour
 {
     KeyboardController keyboardController;
     LobbyPhotonManager lobby;
@@ -16,12 +16,22 @@ public class PlayerMove : MonoBehaviour
     private void Awake()
     {
         Initialized();
+        OnPushKeyboard();
+    }
+
+    private void Initialized()
+    {
+        rb = GetComponent<Rigidbody>();
+        keyboardController = GameObject.Find("KeyboardManager").GetComponent<KeyboardController>();
+    }
+
+    private void OnPushKeyboard()
+    {
         keyboardController.OnKeyDown += () =>
         {
             if (Input.GetKey(KeyCode.W))
             {
-                this.transform.position += new Vector3(0f,0f,3f);
-                //MoveVertical(speedCurrent);
+                MoveVertical(speedCurrent);
             }
             if (Input.GetKey(KeyCode.S))
             {
@@ -36,12 +46,14 @@ public class PlayerMove : MonoBehaviour
                 MoveHorizontal(speedCurrent);
             }
         };
-    }
 
-    private void Initialized()
-    {
-        GameObject clone = new GameObject("KeyboardController");
-        keyboardController = clone.AddComponent<KeyboardController>();
+        keyboardController.OnKeyUp += () =>
+        {
+            if (Input.GetKeyUp(KeyCode.W) || Input.GetKeyUp(KeyCode.S) || Input.GetKeyUp(KeyCode.A) || Input.GetKeyUp(KeyCode.D))
+            {
+                speed = 0f;
+            }
+        };
     }
 
     private void MoveVertical(float speedH)
