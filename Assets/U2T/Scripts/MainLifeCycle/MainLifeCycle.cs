@@ -5,11 +5,11 @@ using U2T.Keyboard;
 
 public class MainLifeCycle : MonoBehaviour
 {
-    KeyboardController keyboardController;
+    PlayerTransform playerTransform;
 
     private void Awake()
     {
-
+        playerTransform = GameObject.Find("PlayerLocal").GetComponent<PlayerTransform>();
     }
 
     private void Start()
@@ -19,6 +19,11 @@ public class MainLifeCycle : MonoBehaviour
 
     private void Update()
     {
-        keyboardController.InputKeyboard();
+        playerTransform.TransformPlayer();
+    }
+
+    private void Initialize()
+    {
+
     }
 }
