@@ -7,7 +7,6 @@ using Photon.Realtime;
 public class LobbyPhotonManager : MonoBehaviourPunCallbacks
 {
     private RoomOptions _roomOptions;
-    private PhotonView view;
 
     private void Awake()
     {
@@ -26,11 +25,7 @@ public class LobbyPhotonManager : MonoBehaviourPunCallbacks
 
     public override void OnJoinedRoom()
     {
-        PhotonNetwork.LoadLevel("");
+        PhotonNetwork.LoadLevel("PhotonGamePlay");
     }
 
-    public bool ViewOnline()
-    {
-        return view.IsMine;
-    }
 }
