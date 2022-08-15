@@ -29,41 +29,47 @@ public class ChatMessage : MonoBehaviourPun
 
         if (view.IsMine)
         {
-            if (send || Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.KeypadEnter))
+            if (Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.KeypadEnter))
             {
-                if (PhotonNetwork.LocalPlayer.IsLocal)
-                {
-                    GameObject msgBox = Instantiate(Resources.Load("DialogBoxLocal") as GameObject);
-                    msgBox.transform.parent = parent.transform;
-                    msgBox.transform.GetChild(0).GetComponent<Text>().text = "  " + chatInputField.text;
-                    currentText = chatInputField.text;
-                    view.RPC("ISend", RpcTarget.All, currentText);
-                }
-                else
-                {
-                    GameObject msgBox = Instantiate(Resources.Load("DialogBoxOther") as GameObject);
-                    msgBox.transform.parent = parent.transform;
-                    msgBox.transform.GetChild(0).GetComponent<Text>().text = chatInputField.text + "  ";
-                    currentText = chatInputField.text;
-                    view.RPC("ISend", RpcTarget.All, currentText);
-                }
+
+                GameObject msgBox = Instantiate(Resources.Load("DialogBoxLocal") as GameObject);
+                msgBox.transform.parent = parent.transform;
+                msgBox.transform.GetChild(0).GetComponent<Text>().text = "  " + chatInputField.text;
+                currentText = chatInputField.text;
+                view.RPC("ISend", RpcTarget.Others, currentText);
+
+                //Debug.Log("Other");
+                //GameObject msgBoxOther = Instantiate(Resources.Load("DialogBoxOther") as GameObject);
+                //msgBoxOther.transform.parent = parent.transform;
+                //msgBoxOther.transform.GetChild(0).GetComponent<Text>().text = chatInputField.text + "  ";
+                //currentText = chatInputField.text;
+                //view.RPC("ISend", RpcTarget.All, currentText);
+                //send = false;
+
                 //updateText.text += chatInputField.text;
                 //currentText = updateText.text + "\n";
                 //view.RPC("ISend", RpcTarget.All, currentText);
                 //chatInputField.text = "";
+
                 send = false;
             }
+            //if (send)
+            //{
+            //    GameObject msgBoxOther = Instantiate(Resources.Load("DialogBoxOther") as GameObject);
+            //    msgBoxOther.transform.parent = parent.transform;
+            //    msgBoxOther.transform.GetChild(0).GetComponent<Text>().text = chatInputField.text + "  ";
+            //    currentText = chatInputField.text;
+            //    view.RPC("ISend", RpcTarget.All, currentText);
+            //}
         }
-    }
-
-    public void Send()
-    {
-        send = true;
     }
 
     [PunRPC]
     void ISend(string message)
     {
         message = chatInputField.text;
+        GameObject msgBoxOther = Instantiate(Resources.Load("DialogBoxOther") as GameObject);
+        msgBoxOther.transform.parent = parent.transform;
+        msgBoxOther.transform.GetChild(0).GetComponent<Text>().text = message + "  ";
     }
 }
