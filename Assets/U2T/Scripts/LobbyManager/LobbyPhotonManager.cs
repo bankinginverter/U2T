@@ -25,7 +25,7 @@ public class LobbyPhotonManager : MonoBehaviourPunCallbacks
 
     public override void OnJoinedRoom()
     {
-        PhotonNetwork.LoadLevel("PhotonChat");
+        PhotonNetwork.LoadLevel("PhotonGamePlay");
     }
 
 }
