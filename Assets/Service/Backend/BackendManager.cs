@@ -27,10 +27,11 @@ namespace U2T
             collection.InsertOne(document);
         }
 
-        public void FilterData(string username, string password)
+
+        public void FilterData(string fill, string value)
         {
             //collection.Find(new BsonDocument()).ForEachAsync(X => Debug.Log(X));   
-            var filter = Builders<BsonDocument>.Filter.Eq(username,password);
+            var filter = Builders<BsonDocument>.Filter.Eq(fill,value);
             var result = collection.Find(filter).FirstOrDefault();
             Debug.Log(result);
         }
