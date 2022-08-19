@@ -17,9 +17,6 @@ public class ChatMessage : MonoBehaviourPun
 
     private void Awake()
     {
-        //instace = this;
-        //a = GetComponent<RectTransform>();
-        //parent.sizeDelta = new Vector2(10f,100f);
         view = GetComponent<PhotonView>();
         chatInputField = GameObject.Find("SendMessageBox").GetComponent<InputField>();
     }
@@ -40,6 +37,7 @@ public class ChatMessage : MonoBehaviourPun
     {
         if ((Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.KeypadEnter)) && chatInputField.text != "")
         {
+            ExplaneParentScale();
             GameObject msgBox = Instantiate(Resources.Load("DialogBoxLocal") as GameObject);
             msgBox.transform.parent = parent.transform;
             msgBox.transform.localScale = new Vector3(1f,1f,1f);
@@ -53,12 +51,17 @@ public class ChatMessage : MonoBehaviourPun
 
     private void ExplaneParentScale()
     {
-
+        if (countMessage > 10)
+        {
+            parent.localPosition = new Vector2(0f, parent.localPosition.y + 32f);       
+            parent.sizeDelta = new Vector2(0f, parent.rect.height + 30);
+        }
     }
 
     [PunRPC]
     void ISend(string message)
     {
+        ExplaneParentScale();
         GameObject msgBoxOther = Instantiate(Resources.Load("DialogBoxOther") as GameObject);
         msgBoxOther.transform.parent = parent.transform;
         msgBoxOther.transform.localScale = new Vector3(1f, 1f, 1f);
