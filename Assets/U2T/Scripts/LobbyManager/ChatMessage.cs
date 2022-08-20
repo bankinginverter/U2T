@@ -6,70 +6,66 @@ using Photon.Pun;
 
 public class ChatMessage : MonoBehaviourPun
 {
-    [SerializeField] Transform parent;
+    [SerializeField] RectTransform parent;
 
     private PhotonView view;
     private InputField chatInputField;
     private Text updateText;
-
-    private bool send = false;
+    private int countMessage = 0;
 
     string currentText = "";
 
     private void Awake()
     {
-        //instace = this;
         view = GetComponent<PhotonView>();
-        //updateText = GameObject.Find("TextboxView").GetComponent<Text>();
         chatInputField = GameObject.Find("SendMessageBox").GetComponent<InputField>();
     }
 
     private void Update()
     {
-
         if (view.IsMine)
         {
-            if (Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.KeypadEnter))
-            {
+            SendMessageToOtherPlayer();
+        }
+        else
+        {
+            SendMessageToOtherPlayer();
+        }
+    }
 
-                GameObject msgBox = Instantiate(Resources.Load("DialogBoxLocal") as GameObject);
-                msgBox.transform.parent = parent.transform;
-                msgBox.transform.GetChild(0).GetComponent<Text>().text = "  " + chatInputField.text;
-                currentText = chatInputField.text;
-                view.RPC("ISend", RpcTarget.Others, currentText);
+    private void SendMessageToOtherPlayer()
+    {
+        if ((Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.KeypadEnter)) && chatInputField.text != "")
+        {
+            ExplaneParentScale();
+            GameObject msgBox = Instantiate(Resources.Load("DialogBoxLocal") as GameObject);
+            msgBox.transform.parent = parent.transform;
+            msgBox.transform.localScale = new Vector3(1f,1f,1f);
+            msgBox.transform.GetChild(0).GetComponent<Text>().text = chatInputField.text + "  ";
+            currentText = chatInputField.text;
+            view.RPC("ISend", RpcTarget.Others, currentText);
+            chatInputField.text = "";
+            countMessage++;
+        }
+    }
 
-                //Debug.Log("Other");
-                //GameObject msgBoxOther = Instantiate(Resources.Load("DialogBoxOther") as GameObject);
-                //msgBoxOther.transform.parent = parent.transform;
-                //msgBoxOther.transform.GetChild(0).GetComponent<Text>().text = chatInputField.text + "  ";
-                //currentText = chatInputField.text;
-                //view.RPC("ISend", RpcTarget.All, currentText);
-                //send = false;
-
-                //updateText.text += chatInputField.text;
-                //currentText = updateText.text + "\n";
-                //view.RPC("ISend", RpcTarget.All, currentText);
-                //chatInputField.text = "";
-
-                send = false;
-            }
-            //if (send)
-            //{
-            //    GameObject msgBoxOther = Instantiate(Resources.Load("DialogBoxOther") as GameObject);
-            //    msgBoxOther.transform.parent = parent.transform;
-            //    msgBoxOther.transform.GetChild(0).GetComponent<Text>().text = chatInputField.text + "  ";
-            //    currentText = chatInputField.text;
-            //    view.RPC("ISend", RpcTarget.All, currentText);
-            //}
+    private void ExplaneParentScale()
+    {
+        if (countMessage > 10)
+        {
+            parent.localPosition = new Vector2(0f, parent.localPosition.y + 32f);       
+            parent.sizeDelta = new Vector2(0f, parent.rect.height + 30);
         }
     }
 
     [PunRPC]
     void ISend(string message)
     {
-        message = chatInputField.text;
+        ExplaneParentScale();
         GameObject msgBoxOther = Instantiate(Resources.Load("DialogBoxOther") as GameObject);
         msgBoxOther.transform.parent = parent.transform;
-        msgBoxOther.transform.GetChild(0).GetComponent<Text>().text = message + "  ";
+        msgBoxOther.transform.localScale = new Vector3(1f, 1f, 1f);
+        msgBoxOther.transform.GetChild(0).GetComponent<Text>().text = "  " + message;
+        countMessage++;
     }
 }
