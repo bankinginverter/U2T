@@ -130,6 +130,18 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 2060778078}
     m_Modifications:
+    - target: {fileID: 962020286980117888, guid: f3acfec4cd388c149abda2d78bfbbd44, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 189.6193
+      objectReference: {fileID: 0}
+    - target: {fileID: 962020286980117888, guid: f3acfec4cd388c149abda2d78bfbbd44, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: -34.5056
+      objectReference: {fileID: 0}
+    - target: {fileID: 2849072636599613915, guid: f3acfec4cd388c149abda2d78bfbbd44, type: 3}
+      propertyPath: m_FontData.m_HorizontalOverflow
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 4322329033735009829, guid: f3acfec4cd388c149abda2d78bfbbd44, type: 3}
       propertyPath: m_Name
       value: RegisterPopup
@@ -217,6 +229,18 @@ PrefabInstance:
     - target: {fileID: 4322329033735009830, guid: f3acfec4cd388c149abda2d78bfbbd44, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4322329035646668172, guid: f3acfec4cd388c149abda2d78bfbbd44, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 1233454573}
+    - target: {fileID: 4322329035646668172, guid: f3acfec4cd388c149abda2d78bfbbd44, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: Register
+      objectReference: {fileID: 0}
+    - target: {fileID: 4322329035646668172, guid: f3acfec4cd388c149abda2d78bfbbd44, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: RegisterManager, Assembly-CSharp
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f3acfec4cd388c149abda2d78bfbbd44, type: 3}
@@ -414,6 +438,17 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1233454573 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2195537605016570106, guid: f3acfec4cd388c149abda2d78bfbbd44, type: 3}
+  m_PrefabInstance: {fileID: 71415146}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b3c8c12f201983a43809bf3de7725fbc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1875751759
 GameObject:
   m_ObjectHideFlags: 0
