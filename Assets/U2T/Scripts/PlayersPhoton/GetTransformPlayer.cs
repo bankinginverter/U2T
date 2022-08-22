@@ -25,6 +25,7 @@ public class GetTransformPlayer : MonoBehaviour
         if (view.IsMine)
         {
             this.transform.position = playerTransform.GetTransform();
+            this.transform.rotation = playerTransform.GetRotation();
         }
     }
 }
