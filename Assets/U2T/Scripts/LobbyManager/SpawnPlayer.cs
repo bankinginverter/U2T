@@ -10,7 +10,7 @@ public class SpawnPlayer : MonoBehaviour
 
     void Start()
     {
-        PhotonNetwork.Instantiate("Capsule",_spawnPoint.transform.position, Quaternion.identity);
+        PhotonNetwork.Instantiate(PlayerPrefs.GetString("character"),_spawnPoint.transform.position, Quaternion.identity);
     }
 
 }
