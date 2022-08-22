@@ -51,4 +51,9 @@ public class Login : MonoBehaviour
         }
         ShowStatus("Registed");
     }
+
+    private void FetchingData()
+    {
+
+    }
 }

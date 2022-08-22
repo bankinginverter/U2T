@@ -9,12 +9,10 @@ public class Register : MonoBehaviour
     [SerializeField] InputField _passwordInput;
     [SerializeField] InputField _comfirmPasswordInput;
     [SerializeField] Text _statusText;
-    BackendManager db;
 
     private void Start()
     {
-        db = new BackendManager();
-        db.Initialize();
+
     }
 
     private void ShowStatus(string status)
@@ -57,7 +55,7 @@ public class Register : MonoBehaviour
             ShowStatus("password or confirm password unmatch");
             return;
         }
-        db.AddData(_emailInput.text, _passwordInput.text);
+        //db.AddData(_emailInput.text, _passwordInput.text);
         ShowStatus("Registed");
     }
 
