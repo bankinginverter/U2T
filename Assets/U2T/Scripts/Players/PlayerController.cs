@@ -6,6 +6,7 @@ using U2T.Keyboard;
 public class PlayerController : MonoBehaviour
 {
     KeyboardController keyboardController;
+    FocusUI focusUI;
     LobbyPhotonManager lobby;
     Rigidbody rb;
 
@@ -23,27 +24,33 @@ public class PlayerController : MonoBehaviour
     {
         rb = GetComponent<Rigidbody>();
         keyboardController = GameObject.Find("KeyboardManager").GetComponent<KeyboardController>();
+        focusUI = GameObject.Find("FocusUI").GetComponent<FocusUI>();
+        focusUI.EventSystemOn();
     }
 
     private void OnPushKeyboard()
     {
         keyboardController.OnKeyDown += () =>
         {
-            if (Input.GetKey(KeyCode.W))
+            focusUI.FocusOnGUI();
+            if (focusUI.Focus())
             {
-                MoveVertical(speedCurrent);
-            }
-            if (Input.GetKey(KeyCode.S))
-            {
-                MoveVertical(-speedCurrent);
-            }
-            if (Input.GetKey(KeyCode.A))
-            {
-                MoveHorizontal(-speedCurrent);
-            }
-            if (Input.GetKey(KeyCode.D))
-            {
-                MoveHorizontal(speedCurrent);
+                if (Input.GetKey(KeyCode.W))
+                {
+                    MoveVertical(speedCurrent);
+                }
+                if (Input.GetKey(KeyCode.S))
+                {
+                    MoveVertical(-speedCurrent);
+                }
+                if (Input.GetKey(KeyCode.A))
+                {
+                    MoveHorizontal(-speedCurrent);
+                }
+                if (Input.GetKey(KeyCode.D))
+                {
+                    MoveHorizontal(speedCurrent);
+                }
             }
         };
 
