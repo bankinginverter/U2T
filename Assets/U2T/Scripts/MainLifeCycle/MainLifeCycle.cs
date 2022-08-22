@@ -6,17 +6,18 @@ using U2T.Foundation;
 
 public class MainLifeCycle : MonoBehaviour
 {
+    PlayerAnimation playerAnimation;
     PlayerTransform playerTransform;
     AppStateManager appStateManager;
 
     private void Awake()
     {
         playerTransform = GameObject.Find("PlayerLocal").GetComponent<PlayerTransform>();
-        appStateManager.OnStateChange?.Invoke();
-        appStateManager.OnStateChange += () =>
-        {
-            appStateManager.ChangeAppState(AppStateManager.GameState.PHOTON_CONNECTING);
-        };
+        //appStateManager.OnStateChange?.Invoke();
+        //appStateManager.OnStateChange += () =>
+        //{
+        //    appStateManager.ChangeAppState(AppStateManager.GameState.PHOTON_CONNECTING);
+        //};
     }
 
     private void Start()
@@ -26,7 +27,7 @@ public class MainLifeCycle : MonoBehaviour
 
     private void Update()
     {
-        Cursor.lockState = CursorLockMode.Confined;
+        //Cursor.lockState = CursorLockMode.Confined;
         playerTransform.TransformPlayer();
     }
 
