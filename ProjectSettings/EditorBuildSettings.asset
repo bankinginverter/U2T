@@ -4,5 +4,11 @@
 EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
-  m_Scenes: []
+  m_Scenes:
+  - enabled: 1
+    path: Assets/U2T/Scenes/WorkShop/Photon.unity
+    guid: 85012fa0a4beee54d9773e88f6403289
+  - enabled: 1
+    path: Assets/U2T/Scenes/WorkShop/PhotonGamePlay.unity
+    guid: 44277721eac9ae94a8e4aebb2de158eb
   m_configObjects: {}
