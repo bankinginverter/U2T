@@ -28,12 +28,12 @@ namespace U2T
         }
 
 
-        public void FilterData(string fill, string value)
+        public BsonDocument FilterData(string fill, string value)
         {
             //collection.Find(new BsonDocument()).ForEachAsync(X => Debug.Log(X));   
-            var filter = Builders<BsonDocument>.Filter.Eq(fill,value);
+            var filter = Builders<BsonDocument>.Filter.Eq(fill, value);
             var result = collection.Find(filter).FirstOrDefault();
-            Debug.Log(result);
+            return result;
         }
 
         public void RemoveData(string username, string password)
