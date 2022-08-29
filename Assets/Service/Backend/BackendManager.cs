@@ -42,7 +42,7 @@ namespace U2T
             collection.DeleteOne(document);
         }
 
-        private string EncodePasswordToHAS256(string password)
+        public string EncodePasswordToHAS256(string password)
         {
             var sha256 = SHA256.Create();
             byte[] bytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(password));
