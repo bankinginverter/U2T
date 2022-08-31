@@ -10,10 +10,11 @@ public class Register : MonoBehaviour
     [SerializeField] InputField _comfirmPasswordInput;
     [SerializeField] Text _statusText;
 
-    private void Start()
-    {
+    public delegate void RegisterDelegate(string username , string password);
+    public delegate void GotoLoginDelegate();
 
-    }
+    public RegisterDelegate OnRegisted = null;
+    public GotoLoginDelegate OnGotoLogin = null;
 
     private void ShowStatus(string status)
     {
@@ -56,7 +57,18 @@ public class Register : MonoBehaviour
             return;
         }
         //db.AddData(_emailInput.text, _passwordInput.text);
+        Registed();
         ShowStatus("Registed");
+    }
+
+    public void GotoLogin()
+    {
+        OnGotoLogin?.Invoke();
+    }
+
+    public void Registed()
+    {
+        OnRegisted?.Invoke(_emailInput.text,_passwordInput.text);
     }
 
 }

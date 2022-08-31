@@ -12,12 +12,14 @@ public class MainLifeCycle : MonoBehaviour
 
     private void Awake()
     {
-        playerTransform = GameObject.Find("PlayerLocal").GetComponent<PlayerTransform>();
-        //appStateManager.OnStateChange?.Invoke();
-        //appStateManager.OnStateChange += () =>
-        //{
-        //    appStateManager.ChangeAppState(AppStateManager.GameState.PHOTON_CONNECTING);
-        //};
+        //Cursor.lockState = CursorLockMode.Locked;
+        //playerTransform = GameObject.Find("PlayerLocal").GetComponent<PlayerTransform>();
+        appStateManager = GameObject.Find("SceneManager").GetComponent<AppStateManager>();
+        appStateManager.OnStateChange += () =>
+        {
+            Debug.Log("IN");
+            appStateManager.ChangeAppState(AppStateManager.GameState.PHOTON_CONNECTING);
+        };
     }
 
     private void Start()
@@ -27,8 +29,7 @@ public class MainLifeCycle : MonoBehaviour
 
     private void Update()
     {
-        //Cursor.lockState = CursorLockMode.Confined;
-        playerTransform.TransformPlayer();
+        //playerTransform.TransformPlayer();
     }
 
     private void Initialize()

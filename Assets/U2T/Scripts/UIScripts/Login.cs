@@ -9,6 +9,11 @@ public class Login : MonoBehaviour
     [SerializeField] InputField _passwordInput;
     [SerializeField] Text _statusText;
 
+    public delegate void LoginDelegate(string usename , string password);
+    public delegate void GotoRegisterDelegate();
+    public LoginDelegate OnLoggedin = null;
+    public GotoRegisterDelegate OnGotoRegister = null;
+
     private void ShowStatus(string status)
     {
         _statusText.text = status;
@@ -50,10 +55,16 @@ public class Login : MonoBehaviour
             return;
         }
         ShowStatus("Registed");
+        FetchingData();
+    }
+
+    public void GotoRegister()
+    {
+        OnGotoRegister?.Invoke();
     }
 
     private void FetchingData()
     {
-
+        OnLoggedin?.Invoke(_emailInput.text,_passwordInput.text);
     }
 }

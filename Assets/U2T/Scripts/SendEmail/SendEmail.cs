@@ -12,22 +12,10 @@ public class SendEmail : MonoBehaviour
     {
         SimpleEmailSender.emailSettings.STMPClient = "smtp.gmail.com";
         SimpleEmailSender.emailSettings.SMTPPort = 587;
-        SimpleEmailSender.emailSettings.UserName = "PhotharamMetaverseRatchaburi@gmail.com";
-        SimpleEmailSender.emailSettings.UserPass = "rdzllzwkengqeksj";
+        SimpleEmailSender.emailSettings.UserName = "bankinginverter@gmail.com";
+        SimpleEmailSender.emailSettings.UserPass = "kfdpzapdlupukhpo";
 
-        SimpleEmailSender.Send(email, "Authentication identify", "Please Copy this password " + GetOTP() + " to the registerpage", "", SendCompletedCallback);
-    }
-
-    private string GetOTP()
-    {
-        int index1 = Random.Range(0, 9);
-        int index2 = Random.Range(0, 9);
-        int index3 = Random.Range(0, 9);
-        int index4 = Random.Range(0, 9);
-        int index5 = Random.Range(0, 9);
-        int index6 = Random.Range(0, 9);
-
-        return index1.ToString() + index2.ToString() + index3.ToString() + index4.ToString() + index5.ToString() + index6.ToString();
+        SimpleEmailSender.Send(email, "Authentication identify", "Please Copy this password " + GenOTP.instance.GetOTP() + " to the registerpage", "", SendCompletedCallback);
     }
 
     private void SendCompletedCallback(object sender, AsyncCompletedEventArgs e)

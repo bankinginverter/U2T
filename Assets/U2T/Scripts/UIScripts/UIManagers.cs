@@ -18,11 +18,12 @@ public class UIManagers : MonoBehaviour
     public void EnbleUIPopUp(string nameUIPopup)
     {
         GameObject gameObjectUI = Instantiate(Resources.Load<GameObject>(nameUIPopup),canvas.transform) as GameObject;
+        gameObjectUI.name = nameUIPopup;
     }
 
     public void DisableUIPopUp(string nameUIPopup)
     {
         GameObject gameObjectUI = GameObject.Find(nameUIPopup).gameObject;
-        gameObjectUI.SetActive(false);
+        Destroy(gameObjectUI);
     }
 }

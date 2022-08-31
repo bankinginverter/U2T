@@ -5,12 +5,18 @@ using Photon.Pun;
 
 public class SpawnPlayer : MonoBehaviour
 {
+    Save save;
+
     [SerializeField] GameObject _spawnPoint;
-    //[SerializeField] SelectCharacter selectCharacter;
+
+    private void Awake()
+    {
+        save = new Save();
+    }
 
     void Start()
     {
-        PhotonNetwork.Instantiate(PlayerPrefs.GetString("character"),_spawnPoint.transform.position, Quaternion.identity);
+        PhotonNetwork.Instantiate(save.GetCharacterID(),_spawnPoint.transform.position, Quaternion.identity);
     }
 
 }

@@ -5,21 +5,26 @@ using System;
 
 public class SelectCharacterCotroller : MonoBehaviour
 {
+    SelectCharactorScreen selectCharactorScreen;
+    Save save;
+
     public Charactor[] charactor;
     private int numberPlayer = 0;
+    private GameObject _gameObjectCharacter;
 
-    SelectCharactorScreen selectCharactorScreen;
 
     public void Awake()
     {
+        save = new Save();
+        _gameObjectCharacter = Instantiate(Resources.Load<GameObject>(charactor[numberPlayer].nameCharactor)) as GameObject;
         selectCharactorScreen = GetComponent<SelectCharactorScreen>();
         selectCharactorScreen.OnLeftBtn += () =>
         {
             if (numberPlayer > 0)
             {
-                charactor[numberPlayer].charactorObject.SetActive(false);
+                Destroy(_gameObjectCharacter);
                 numberPlayer--;
-                charactor[numberPlayer].charactorObject.SetActive(true);
+                _gameObjectCharacter = Instantiate(Resources.Load<GameObject>(charactor[numberPlayer].nameCharactor)) as GameObject;
             }
         };
 
@@ -27,21 +32,15 @@ public class SelectCharacterCotroller : MonoBehaviour
         {
             if (numberPlayer < 4)
             {
-                charactor[numberPlayer].charactorObject.SetActive(false);
+                Destroy(_gameObjectCharacter);
                 numberPlayer++;
-                charactor[numberPlayer].charactorObject.SetActive(true);
+                _gameObjectCharacter = Instantiate(Resources.Load<GameObject>(charactor[numberPlayer].nameCharactor)) as GameObject;
             }
         };
 
         selectCharactorScreen.OnEnter += () =>
         {
-            PlayerPrefs.SetString("character", charactor[numberPlayer].nameCharactor);
-        };
-
-        selectCharactorScreen.OnSelectBtn += () =>
-        {
-            //PlayerPrefs.SetString("character", charactor[numberPlayer].nameCharactor);
-            //SelectCharacter.instance.playerAvatarName = charactor[numberPlayer].nameCharactor;
+            save.SaveCharacterID(charactor[numberPlayer].nameCharactor);
         };
     }
 
@@ -49,7 +48,6 @@ public class SelectCharacterCotroller : MonoBehaviour
     [Serializable]
     public class Charactor
     {
-        public GameObject charactorObject;
         public string nameCharactor;
     }
 }

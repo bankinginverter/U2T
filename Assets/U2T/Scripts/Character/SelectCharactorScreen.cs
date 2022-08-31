@@ -8,7 +8,6 @@ public class SelectCharactorScreen : MonoBehaviour
     public Button leftBtn;
     public Button rightBtn;
     public Button enterBtn;
-    public Button selectPlayerBtn;
 
     public delegate void GeneralDelegate();
     public GeneralDelegate OnLeftBtn = null;
@@ -21,7 +20,6 @@ public class SelectCharactorScreen : MonoBehaviour
         leftBtn.onClick.AddListener(Left);
         rightBtn.onClick.AddListener(Right);
         enterBtn.onClick.AddListener(Enter);
-        //selectPlayerBtn.onClick.AddListener(SelectPlayer);
     }
 
     public void Left()
