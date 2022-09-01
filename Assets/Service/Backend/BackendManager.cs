@@ -15,7 +15,7 @@ namespace U2T
         IMongoCollection<BsonDocument> collection;
 
         public void Initialize()
-        {
+        {         
             mongoClient = new MongoClient("mongodb+srv://mndb1234:mndb1234@cluster0.njcbd.mongodb.net/testDB?retryWrites=true&w=majority");
             database = mongoClient.GetDatabase("mndb1234");
             collection = database.GetCollection<BsonDocument>("testDB");
