@@ -298,7 +298,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &289286111
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -513,16 +513,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   charactor:
-  - charactorObject: {fileID: 0}
-    nameCharactor: C1
-  - charactorObject: {fileID: 0}
-    nameCharactor: C2
-  - charactorObject: {fileID: 0}
-    nameCharactor: C3
-  - charactorObject: {fileID: 0}
-    nameCharactor: C4
-  - charactorObject: {fileID: 0}
-    nameCharactor: C5
+  - nameCharactor: C1
+  - nameCharactor: C2
+  - nameCharactor: C3
+  - nameCharactor: C4
+  - nameCharactor: C5
 --- !u!114 &1617408919
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -538,7 +533,6 @@ MonoBehaviour:
   leftBtn: {fileID: 0}
   rightBtn: {fileID: 0}
   enterBtn: {fileID: 0}
-  selectPlayerBtn: {fileID: 0}
 --- !u!1 &1651664036
 GameObject:
   m_ObjectHideFlags: 0
