@@ -40,7 +40,15 @@ public class SelectCharacterCotroller : MonoBehaviour
 
         selectCharactorScreen.OnEnter += () =>
         {
-            save.SaveCharacterID(charactor[numberPlayer].nameCharactor);
+            string _phares = charactor[numberPlayer].nameCharactor;
+            string[] _words = _phares.Split('P');
+            string _nameRealCharacter = "";
+            foreach (var word in _words)
+            {
+                _nameRealCharacter = word;
+                break;
+            }
+            save.SaveCharacterID(_nameRealCharacter);
         };
     }
 
