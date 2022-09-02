@@ -9,10 +9,11 @@ public class PlayerController : MonoBehaviour
     FocusUI focusUI;
     LobbyPhotonManager lobby;
     Rigidbody rb;
+    CharacterController _characterController;
 
-    [SerializeField] bool isLocal = true;
-    private float speedCurrent = 5f;
-    private float speed = 0f;
+    private float _speedCurrent = 5f;
+    private float _speed = 0f;
+    private float _gravity = -20f;
 
     private void Awake()
     {
@@ -23,6 +24,7 @@ public class PlayerController : MonoBehaviour
     private void Initialized()
     {
         rb = GetComponent<Rigidbody>();
+        _characterController = GetComponent<CharacterController>();
         keyboardController = GameObject.Find("KeyboardManager").GetComponent<KeyboardController>();
         focusUI = GameObject.Find("FocusUI").GetComponent<FocusUI>();
         focusUI.EventSystemOn();
@@ -37,19 +39,19 @@ public class PlayerController : MonoBehaviour
             {
                 if (Input.GetKey(KeyCode.W))
                 {
-                    MoveVertical(speedCurrent);
+                    MoveVertical(_speedCurrent);
                 }
                 if (Input.GetKey(KeyCode.S))
                 {
-                    MoveVertical(-speedCurrent);
+                    MoveVertical(-_speedCurrent);
                 }
                 if (Input.GetKey(KeyCode.A))
                 {
-                    MoveHorizontal(-speedCurrent);
+                    MoveHorizontal(-_speedCurrent);
                 }
                 if (Input.GetKey(KeyCode.D))
                 {
-                    MoveHorizontal(speedCurrent);
+                    MoveHorizontal(_speedCurrent);
                 }
             }
         };
@@ -58,20 +60,25 @@ public class PlayerController : MonoBehaviour
         {
             if (Input.GetKeyUp(KeyCode.W) || Input.GetKeyUp(KeyCode.S) || Input.GetKeyUp(KeyCode.A) || Input.GetKeyUp(KeyCode.D))
             {
-                speed = 0f;
+                _speed = 0f;
             }
         };
     }
 
     private void MoveVertical(float speedH)
     {
-        speed = speedH;
-        rb.velocity = transform.forward * speed;
+        _speed = speedH;
+        Vector3 _move = transform.TransformDirection(Vector3.forward * _speed);
+        _move.y += _gravity;
+        _characterController.Move(_move * Time.deltaTime);
     }
 
     private void MoveHorizontal(float speedV)
     {
-        speed = speedV;
-        rb.velocity = transform.right * speed;
+        _speed = speedV;
+        //rb.velocity = transform.right * speed;
+        Vector3 _move = transform.TransformDirection(Vector3.right * _speed);
+        _move.y += _gravity;
+        _characterController.Move(_move * Time.deltaTime);
     }
 }
