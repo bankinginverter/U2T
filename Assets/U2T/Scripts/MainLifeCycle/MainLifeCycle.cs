@@ -13,7 +13,6 @@ public class MainLifeCycle : MonoBehaviour
     private void Awake()
     {
         //Cursor.lockState = CursorLockMode.Locked;
-        //playerTransform = GameObject.Find("PlayerLocal").GetComponent<PlayerTransform>();
         appStateManager = GameObject.Find("SceneManager").GetComponent<AppStateManager>();
         appStateManager.OnStateChange += () =>
         {
@@ -29,7 +28,7 @@ public class MainLifeCycle : MonoBehaviour
 
     private void Update()
     {
-        //playerTransform.TransformPlayer();
+
     }
 
     private void Initialize()
