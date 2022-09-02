@@ -17,7 +17,7 @@ public class MainLifeCycle : MonoBehaviour
         appStateManager.OnStateChange += () =>
         {
             Debug.Log("IN");
-            appStateManager.ChangeAppState(AppStateManager.GameState.PHOTON_CONNECTING);
+            appStateManager.ChangeAppState(Enumulator.GameState.PHOTON_CONNECTING);
         };
     }
 

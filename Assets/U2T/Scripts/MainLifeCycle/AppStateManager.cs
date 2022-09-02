@@ -10,6 +10,7 @@ namespace U2T.Foundation
     public class AppStateManager : MonoBehaviour
     {
         //BackendManager db;
+        public static AppStateManager Instance;
         Save save;
         //BsonDocument dbCompare;
 
@@ -35,6 +36,7 @@ namespace U2T.Foundation
         private void Awake()
         {
             //db = new BackendManager();
+            Instance = this;
             save = new Save();
         }
 
@@ -43,22 +45,19 @@ namespace U2T.Foundation
             OnStateChange?.Invoke();
         }
 
-        public void ChangeAppState(GameState gameState)
+        public void ChangeAppState(Enumulator.GameState gameState)
         {
             switch (gameState)
             {
-                case GameState.PHOTON_CONNECTING:
-                    if (PhotonNetwork.IsConnected)
-                    {
-                        Debug.Log("AppState : GameState.PHOTON_CONNECTING");
-                        ChangeAppState(GameState.PHOTON_CONNECTED);
-                    }
+                case Enumulator.GameState.PHOTON_CONNECTING:
+                    Debug.Log("AppState : GameState.PHOTON_CONNECTING");
+                    UIManagers.instance.EnbleUIPopUp("PhotonConnectingPopup");
                     break;
-                case GameState.PHOTON_CONNECTED:
+                case Enumulator.GameState.PHOTON_CONNECTED:
                     Debug.Log("AppState : GameState.PHOTON_CONNECTED");
-                    ChangeAppState(GameState.FETCHING_DATA);
+                    ChangeAppState(Enumulator.GameState.FETCHING_DATA);
                     break;
-                case GameState.FETCHING_DATA:
+                case Enumulator.GameState.FETCHING_DATA:
                     Debug.Log("AppState : GameState.FETCHINGDATA");
                     //db.Initialize();
                     //dbCompare = db.FilterData("username", save.GetUserName());
@@ -72,15 +71,15 @@ namespace U2T.Foundation
                     //    Debug.Log("2");
                     //    ChangeAppState(GameState.SELECT_CHARACTER);
                     //}
-                    ChangeAppState(GameState.SELECT_CHARACTER);
+                    ChangeAppState(Enumulator.GameState.SELECT_CHARACTER);
                     break;
-                case GameState.REGISTER:
+                case Enumulator.GameState.REGISTER:
                     Debug.Log("AppState : GameState.REGISTER");
                     UIManagers.instance.EnbleUIPopUp("RegisterPopup");
                     GameObject.Find("RegisterPopup").GetComponent<Register>().OnGotoLogin += () =>
                     {
                         UIManagers.instance.DisableUIPopUp("RegisterPopup");
-                        ChangeAppState(GameState.LOGING_IN);
+                        ChangeAppState(Enumulator.GameState.LOGING_IN);
                     };
                     GameObject.Find("RegisterPopup").GetComponent<Register>().OnRegisted += (username,password) =>
                     {
@@ -93,11 +92,11 @@ namespace U2T.Foundation
                             //save.SavePassword(db.EncodePasswordToHAS256(password));
                             UIManagers.instance.DisableUIPopUp("AuthenPopup");
                             UIManagers.instance.DisableUIPopUp("RegisterPopup");
-                            ChangeAppState(GameState.LOGING_IN);
+                            ChangeAppState(Enumulator.GameState.LOGING_IN);
                         };
                     };
                     break;
-                case GameState.LOGING_IN:
+                case Enumulator.GameState.LOGING_IN:
                     Debug.Log("AppState : GameState.LOGIN");
                     UIManagers.instance.EnbleUIPopUp("LoginPopup");
 
@@ -110,7 +109,7 @@ namespace U2T.Foundation
                     GameObject.Find("LoginPopup").GetComponent<Login>().OnGotoRegister += () =>
                     {
                         UIManagers.instance.DisableUIPopUp("LoginPopup");
-                        ChangeAppState(GameState.REGISTER);
+                        ChangeAppState(Enumulator.GameState.REGISTER);
                     };
 
                     GameObject.Find("LoginPopup").GetComponent<Login>().OnLoggedin += (username,password) =>
@@ -122,28 +121,28 @@ namespace U2T.Foundation
                         //}
                     };
                     break;
-                case GameState.LOGGED_IN:
+                case Enumulator.GameState.LOGGED_IN:
                     Debug.Log("AppState : GameState.LOGGED_IN");
                     break;
-                case GameState.LOG_OUT:
+                case Enumulator.GameState.LOG_OUT:
                     save.SaveUserName("");
                     save.SavePassword("");
-                    ChangeAppState(GameState.LOGING_IN);
+                    ChangeAppState(Enumulator.GameState.LOGING_IN);
                     break;
-                case GameState.SELECT_CHARACTER:
+                case Enumulator.GameState.SELECT_CHARACTER:
                     Debug.Log("AppState : GameState.SELECT_CHARACTER");
                     UIManagers.instance.EnbleUIPopUp("SelectCharacterPopup");
                     GameObject.Find("SelectCharacterPopup").GetComponent<SelectCharactorScreen>().OnEnter += () =>
                     {
-                        ChangeAppState(GameState.GAMEPLAY_INIT);
+                        ChangeAppState(Enumulator.GameState.GAMEPLAY_INIT);
                         GameObject.Find("SceneManager").GetComponent<LobbyPhotonManager>().JoinOrCreateRoom("B");
                     };
                     break;
-                case GameState.GAMEPLAY_INIT:
+                case Enumulator.GameState.GAMEPLAY_INIT:
                     Debug.Log("AppState : GameState.GAME_INIT");
-                    ChangeAppState(GameState.GAMEPLAY_START);
+                    ChangeAppState(Enumulator.GameState.GAMEPLAY_START);
                     break;
-                case GameState.GAMEPLAY_START:
+                case Enumulator.GameState.GAMEPLAY_START:
                     Debug.Log("AppState : GameState.GAME_START");
                     break;
                 default:
