@@ -90,7 +90,7 @@ GameObject:
   - component: {fileID: 1363375765549887323}
   - component: {fileID: 1405880441219777082}
   m_Layer: 5
-  m_Name: CheckinPopup
+  m_Name: CheckInPopup
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -131,6 +131,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2dbb56a47ee38214e96dda91306d6d58, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _imageIcon1: {fileID: 1363375765619591539}
+  _imageIcon2: {fileID: 1363375766280697373}
+  _imageIcon3: {fileID: 1363375765582390018}
+  _imageIcon4: {fileID: 1363375766501598240}
 --- !u!1 &1363375765551832752
 GameObject:
   m_ObjectHideFlags: 0
@@ -1472,7 +1476,7 @@ GameObject:
   - component: {fileID: 1363375767234888093}
   - component: {fileID: 1363375767234888092}
   m_Layer: 5
-  m_Name: Button
+  m_Name: CheckInButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1485,7 +1489,7 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1363375767234888094}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -1605,9 +1609,9 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1363375767421946338}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
+  m_LocalScale: {x: 0.49999994, y: 0.49999994, z: 0.49999994}
   m_Children: []
   m_Father: {fileID: 1363375767126978086}
   m_RootOrder: 4
