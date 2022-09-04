@@ -687,6 +687,7 @@ GameObject:
   - component: {fileID: -2783258504296603132}
   - component: {fileID: -2235064504578941250}
   - component: {fileID: 6427837682785281248}
+  - component: {fileID: -2769800426411753128}
   m_Layer: 0
   m_Name: C5
   m_TagString: Untagged
@@ -743,7 +744,7 @@ Rigidbody:
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 0
-  m_Constraints: 80
+  m_Constraints: 84
   m_CollisionDetection: 0
 --- !u!114 &-1761263985616152837
 MonoBehaviour:
@@ -826,6 +827,22 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   animator: {fileID: 6628532633891801305}
+--- !u!114 &-2769800426411753128
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6628532633891801319}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b8c4a61274f60b4ea5fb4299cfdbf14, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ShowLayerWeightsInspector: 1
+  ShowParameterInspector: 1
+  m_SynchronizeParameters: []
+  m_SynchronizeLayers: []
 --- !u!1 &6628532633894101552
 GameObject:
   m_ObjectHideFlags: 0

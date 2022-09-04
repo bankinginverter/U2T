@@ -2442,6 +2442,7 @@ GameObject:
   - component: {fileID: -8314977838547634606}
   - component: {fileID: -5278532620148310791}
   - component: {fileID: 2624643318155421410}
+  - component: {fileID: 6959974122612948806}
   m_Layer: 0
   m_Name: C3
   m_TagString: Untagged
@@ -2498,7 +2499,7 @@ Rigidbody:
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 0
-  m_Constraints: 80
+  m_Constraints: 84
   m_CollisionDetection: 0
 --- !u!114 &-1060171763914524611
 MonoBehaviour:
@@ -2581,6 +2582,22 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   animator: {fileID: 532896213720621455}
+--- !u!114 &6959974122612948806
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 532896213720621449}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b8c4a61274f60b4ea5fb4299cfdbf14, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ShowLayerWeightsInspector: 1
+  ShowParameterInspector: 1
+  m_SynchronizeParameters: []
+  m_SynchronizeLayers: []
 --- !u!1 &532896213724500715
 GameObject:
   m_ObjectHideFlags: 0

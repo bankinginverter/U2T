@@ -442,6 +442,7 @@ GameObject:
   - component: {fileID: -4060863155400581917}
   - component: {fileID: -7392452328704161105}
   - component: {fileID: 1372317727956115441}
+  - component: {fileID: -4219368975382743258}
   m_Layer: 0
   m_Name: C4
   m_TagString: Untagged
@@ -498,7 +499,7 @@ Rigidbody:
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 0
-  m_Constraints: 80
+  m_Constraints: 84
   m_CollisionDetection: 0
 --- !u!114 &1453201554579386741
 MonoBehaviour:
@@ -581,6 +582,22 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   animator: {fileID: 5031484169121541518}
+--- !u!114 &-4219368975382743258
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5031484169121541512}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b8c4a61274f60b4ea5fb4299cfdbf14, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ShowLayerWeightsInspector: 1
+  ShowParameterInspector: 1
+  m_SynchronizeParameters: []
+  m_SynchronizeLayers: []
 --- !u!1 &5031484169135929637
 GameObject:
   m_ObjectHideFlags: 0
