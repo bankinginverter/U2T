@@ -15,6 +15,7 @@ public class Enumulator
         LOG_OUT,
         SELECT_CHARACTER,
         GAMEPLAY_INIT,
-        GAMEPLAY_START
+        GAMEPLAY_START,
+        CHECKIN_POPUP
     }
 }

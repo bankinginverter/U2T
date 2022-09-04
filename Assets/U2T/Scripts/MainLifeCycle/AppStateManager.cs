@@ -187,6 +187,15 @@ namespace U2T.Foundation
                             GameObject.Find("PassportHistoryPopup").GetComponent<PassportHistoryPopup>().ShowSign("Normal4");
                             GameObject.Find("PassportHistoryPopup").GetComponent<PassportHistoryPopup>().DisableSign("Reward4");
                         }
+                        if (CheckInManager.Instance.GetCounting() == 4)
+                        {
+                            GameObject.Find("PassportHistoryPopup").GetComponent<PassportHistoryPopup>().ShowSign("QR");
+                            save.SaveCheckInSuccess();
+                        }
+                        if (save.GetCheckInSuccess() == "Complete")
+                        {
+                            GameObject.Find("PassportHistoryPopup").GetComponent<PassportHistoryPopup>().ShowSign("QR");
+                        }
                         GameObject.Find("GeneralMenuPopup").GetComponent<GeneralMenuPopup>().SetExitButtonEnable(true);
                     };
                     GameObject.Find("GeneralMenuPopup").GetComponent<GeneralMenuPopup>().OnExit += () =>
@@ -197,15 +206,48 @@ namespace U2T.Foundation
                     GameObject.Find("PlayerLocal").GetComponent<PlayerHitObject>().OnHit += (name) =>
                     {
                         UIManagers.Instance.EnbleUIPopUp("CheckInPopup");
-                        GameObject.Find("CheckInPopup").GetComponent<CheckInPopup>().ShowIcon(name);
-                        GameObject.Find("CheckInPopup").GetComponent<CheckInPopup>().SetTextLabel(name);
+                        GameObject.Find("CheckInPopup").GetComponent<CheckInPopup>().OnShowCheckInPopup += () =>
+                        {
+                            GameObject.Find("CheckInPopup").GetComponent<CheckInPopup>().ShowIcon(name);
+                            GameObject.Find("CheckInPopup").GetComponent<CheckInPopup>().SetTextLabel(name);
+                            CheckInManager.Instance.Counting();
+                            if (name == "Katom")
+                            {
+                                save.SaveCheckIn1("pass");
+                            }
+                            if (name == "Donom")
+                            {
+                                save.SaveCheckIn2("pass");
+                            }
+                            if (name == "Gallery")
+                            {
+                                save.SaveCheckIn3("pass");
+                            }
+                            if (name == "River")
+                            {
+                                save.SaveCheckIn4("pass");
+                            }
+                        };
+                        GameObject.Find("CheckInPopup").GetComponent<CheckInPopup>().OnCheckIn += (nameIconforDestory) =>
+                        {
+                            UIManagers.Instance.DisableUIPopUp("CheckInPopup");
+                        };
                     };
-                    //GameObject.Find("CheckInPopup").GetComponent<CheckInPopup>().OnCheckIn += (name) =>
-                    //{
-                    //    GameObject.Find("CheckInPopup").GetComponent<CheckInPopup>().DisableIcon(name);
-                    //    UIManagers.Instance.DisableUIPopUp("CheckInPopup");
-                    //};
                     break;
+                //case Enumulator.GameState.CHECKIN_POPUP:
+                //    Debug.Log("AppState : GameState.CHECKIN_POPUP");
+                //    UIManagers.Instance.EnbleUIPopUp("CheckInPopup");
+                //    GameObject.Find("CheckInPopup").GetComponent<CheckInPopup>().OnShowCheckInPopup += () =>
+                //    {
+                //        GameObject.Find("CheckInPopup").GetComponent<CheckInPopup>().ShowIcon("River");
+                //        GameObject.Find("CheckInPopup").GetComponent<CheckInPopup>().SetTextLabel("River");
+                //    };
+                //    GameObject.Find("CheckInPopup").GetComponent<CheckInPopup>().OnCheckIn += (name) =>
+                //    {
+                //        UIManagers.Instance.DisableUIPopUp("CheckInPopup");
+                //        ChangeAppState(Enumulator.GameState.GAMEPLAY_START);
+                //    };
+                //    break;
                 default:
                     break;
             }
