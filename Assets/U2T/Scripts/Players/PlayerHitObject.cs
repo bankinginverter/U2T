@@ -13,6 +13,8 @@ public class PlayerHitObject : MonoBehaviour
         {
             Debug.Log(hit.collider.name);
             OnHit?.Invoke(hit.collider.name);
+            GameObject temp = GameObject.Find(hit.collider.name);
+            Destroy(temp);
         }
     }
 }
