@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class Save
 {
-
     public void SaveUserName(string username)
     {
         PlayerPrefs.SetString("username", username);
@@ -20,6 +19,26 @@ public class Save
         PlayerPrefs.SetString("character", characterID);
     }
 
+    public void SaveCheckIn1(string isActive)
+    {
+        PlayerPrefs.SetString("locations1", isActive);
+    }
+
+    public void SaveCheckIn2(string isActive)
+    {
+        PlayerPrefs.SetString("locations2", isActive);
+    }
+
+    public void SaveCheckIn3(string isActive)
+    {
+        PlayerPrefs.SetString("locations3", isActive);
+    }
+
+    public void SaveCheckIn4(string isActive)
+    {
+        PlayerPrefs.SetString("locations4", isActive);
+    }
+
     public string GetUserName()
     {
         return PlayerPrefs.GetString("username");
@@ -33,5 +52,25 @@ public class Save
     public string GetCharacterID()
     {
         return PlayerPrefs.GetString("character");
+    }
+
+    public string GetCheckIn1()
+    {
+        return PlayerPrefs.GetString("locations1");
+    }
+
+    public string GetCheckIn2()
+    {
+        return PlayerPrefs.GetString("locations2");
+    }
+
+    public string GetCheckIn3()
+    {
+        return PlayerPrefs.GetString("locations3");
+    }
+
+    public string GetCheckIn4()
+    {
+        return PlayerPrefs.GetString("locations4");
     }
 }

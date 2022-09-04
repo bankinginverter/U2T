@@ -6,7 +6,7 @@ public class MainGamePlay : MonoBehaviour
 {
     PlayerTransform _playerTransform;
 
-    private void Start()
+    private void Awake()
     {
         _playerTransform = GameObject.Find("PlayerLocal").GetComponent<PlayerTransform>();
     }

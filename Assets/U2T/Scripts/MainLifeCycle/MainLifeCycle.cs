@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using U2T.Keyboard;
 using U2T.Foundation;
+using UnityEngine.SceneManagement;
 
 public class MainLifeCycle : MonoBehaviour
 {
@@ -13,6 +14,7 @@ public class MainLifeCycle : MonoBehaviour
     private void Awake()
     {
         //Cursor.lockState = CursorLockMode.Locked;
+        //playerTransform = GameObject.Find("PlayerLocal").GetComponent<PlayerTransform>();
         appStateManager = GameObject.Find("SceneManager").GetComponent<AppStateManager>();
         appStateManager.OnStateChange += () =>
         {
@@ -23,12 +25,12 @@ public class MainLifeCycle : MonoBehaviour
 
     private void Start()
     {
-        
+
     }
 
     private void Update()
     {
-
+        //playerTransform.TransformPlayer();
     }
 
     private void Initialize()

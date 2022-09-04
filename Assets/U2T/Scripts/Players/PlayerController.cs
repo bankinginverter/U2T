@@ -76,7 +76,6 @@ public class PlayerController : MonoBehaviour
     private void MoveHorizontal(float speedV)
     {
         _speed = speedV;
-        //rb.velocity = transform.right * speed;
         Vector3 _move = transform.TransformDirection(Vector3.right * _speed);
         _move.y += _gravity;
         _characterController.Move(_move * Time.deltaTime);

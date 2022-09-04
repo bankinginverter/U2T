@@ -51,7 +51,7 @@ namespace U2T.Foundation
             {
                 case Enumulator.GameState.PHOTON_CONNECTING:
                     Debug.Log("AppState : GameState.PHOTON_CONNECTING");
-                    UIManagers.instance.EnbleUIPopUp("PhotonConnectingPopup");
+                    UIManagers.Instance.EnbleUIPopUp("PhotonConnectingPopup");
                     break;
                 case Enumulator.GameState.PHOTON_CONNECTED:
                     Debug.Log("AppState : GameState.PHOTON_CONNECTED");
@@ -75,30 +75,30 @@ namespace U2T.Foundation
                     break;
                 case Enumulator.GameState.REGISTER:
                     Debug.Log("AppState : GameState.REGISTER");
-                    UIManagers.instance.EnbleUIPopUp("RegisterPopup");
+                    UIManagers.Instance.EnbleUIPopUp("RegisterPopup");
                     GameObject.Find("RegisterPopup").GetComponent<Register>().OnGotoLogin += () =>
                     {
-                        UIManagers.instance.DisableUIPopUp("RegisterPopup");
+                        UIManagers.Instance.DisableUIPopUp("RegisterPopup");
                         ChangeAppState(Enumulator.GameState.LOGING_IN);
                     };
                     GameObject.Find("RegisterPopup").GetComponent<Register>().OnRegisted += (username,password) =>
                     {
-                        UIManagers.instance.EnbleUIPopUp("AuthenPopup");
+                        UIManagers.Instance.EnbleUIPopUp("AuthenPopup");
                         GameObject.Find("RegisterPopup").GetComponent<SendEmail>().SendingGmail(username);
                         GameObject.Find("AuthenPopup").GetComponent<Authentication>().OnVerified += () =>
                         {
                             //db.AddData(username, password);
                             save.SaveUserName(username);
                             //save.SavePassword(db.EncodePasswordToHAS256(password));
-                            UIManagers.instance.DisableUIPopUp("AuthenPopup");
-                            UIManagers.instance.DisableUIPopUp("RegisterPopup");
+                            UIManagers.Instance.DisableUIPopUp("AuthenPopup");
+                            UIManagers.Instance.DisableUIPopUp("RegisterPopup");
                             ChangeAppState(Enumulator.GameState.LOGING_IN);
                         };
                     };
                     break;
                 case Enumulator.GameState.LOGING_IN:
                     Debug.Log("AppState : GameState.LOGIN");
-                    UIManagers.instance.EnbleUIPopUp("LoginPopup");
+                    UIManagers.Instance.EnbleUIPopUp("LoginPopup");
 
                     //if (save.GetUserName() == dbCompare.GetValue("username") && save.GetPassword() == dbCompare.GetValue("password"))
                     //{
@@ -108,7 +108,7 @@ namespace U2T.Foundation
 
                     GameObject.Find("LoginPopup").GetComponent<Login>().OnGotoRegister += () =>
                     {
-                        UIManagers.instance.DisableUIPopUp("LoginPopup");
+                        UIManagers.Instance.DisableUIPopUp("LoginPopup");
                         ChangeAppState(Enumulator.GameState.REGISTER);
                     };
 
@@ -131,7 +131,7 @@ namespace U2T.Foundation
                     break;
                 case Enumulator.GameState.SELECT_CHARACTER:
                     Debug.Log("AppState : GameState.SELECT_CHARACTER");
-                    UIManagers.instance.EnbleUIPopUp("SelectCharacterPopup");
+                    UIManagers.Instance.EnbleUIPopUp("SelectCharacterPopup");
                     GameObject.Find("SelectCharacterPopup").GetComponent<SelectCharactorScreen>().OnEnter += () =>
                     {
                         ChangeAppState(Enumulator.GameState.GAMEPLAY_INIT);
@@ -140,10 +140,71 @@ namespace U2T.Foundation
                     break;
                 case Enumulator.GameState.GAMEPLAY_INIT:
                     Debug.Log("AppState : GameState.GAME_INIT");
-                    ChangeAppState(Enumulator.GameState.GAMEPLAY_START);
                     break;
                 case Enumulator.GameState.GAMEPLAY_START:
                     Debug.Log("AppState : GameState.GAME_START");
+                    UIManagers.Instance.EnbleUIPopUp("GeneralMenuPopup");
+                    GameObject.Find("GeneralMenuPopup").GetComponent<GeneralMenuPopup>().OnPassported += () =>
+                    {
+                        UIManagers.Instance.EnbleUIPopUp("PassportHistoryPopup");
+                        if (save.GetCheckIn1() == "pass")
+                        {
+                            GameObject.Find("PassportHistoryPopup").GetComponent<PassportHistoryPopup>().ShowSign("Reward1");
+                            GameObject.Find("PassportHistoryPopup").GetComponent<PassportHistoryPopup>().DisableSign("Disable1");
+                        }
+                        if (save.GetCheckIn2() == "pass")
+                        {
+                            GameObject.Find("PassportHistoryPopup").GetComponent<PassportHistoryPopup>().ShowSign("Reward2");
+                            GameObject.Find("PassportHistoryPopup").GetComponent<PassportHistoryPopup>().DisableSign("Disable2");
+                        }
+                        if (save.GetCheckIn3() == "pass")
+                        {
+                            GameObject.Find("PassportHistoryPopup").GetComponent<PassportHistoryPopup>().ShowSign("Reward3");
+                            GameObject.Find("PassportHistoryPopup").GetComponent<PassportHistoryPopup>().DisableSign("Disable3");
+                        }
+                        if (save.GetCheckIn4() == "pass")
+                        {
+                            GameObject.Find("PassportHistoryPopup").GetComponent<PassportHistoryPopup>().ShowSign("Reward4");
+                            GameObject.Find("PassportHistoryPopup").GetComponent<PassportHistoryPopup>().DisableSign("Disable4");
+                        }
+                        if (save.GetCheckIn1() == "reward")
+                        {
+                            GameObject.Find("PassportHistoryPopup").GetComponent<PassportHistoryPopup>().ShowSign("Normal1");
+                            GameObject.Find("PassportHistoryPopup").GetComponent<PassportHistoryPopup>().DisableSign("Reward1");
+                        }
+                        if (save.GetCheckIn2() == "reward")
+                        {
+                            GameObject.Find("PassportHistoryPopup").GetComponent<PassportHistoryPopup>().ShowSign("Normal2");
+                            GameObject.Find("PassportHistoryPopup").GetComponent<PassportHistoryPopup>().DisableSign("Reward2");
+                        }
+                        if (save.GetCheckIn3() == "reward")
+                        {
+                            GameObject.Find("PassportHistoryPopup").GetComponent<PassportHistoryPopup>().ShowSign("Normal3");
+                            GameObject.Find("PassportHistoryPopup").GetComponent<PassportHistoryPopup>().DisableSign("Reward3");
+                        }
+                        if (save.GetCheckIn4() == "reward")
+                        {
+                            GameObject.Find("PassportHistoryPopup").GetComponent<PassportHistoryPopup>().ShowSign("Normal4");
+                            GameObject.Find("PassportHistoryPopup").GetComponent<PassportHistoryPopup>().DisableSign("Reward4");
+                        }
+                        GameObject.Find("GeneralMenuPopup").GetComponent<GeneralMenuPopup>().SetExitButtonEnable(true);
+                    };
+                    GameObject.Find("GeneralMenuPopup").GetComponent<GeneralMenuPopup>().OnExit += () =>
+                    {
+                        UIManagers.Instance.DisableUIPopUp("PassportHistoryPopup");
+                        GameObject.Find("GeneralMenuPopup").GetComponent<GeneralMenuPopup>().SetExitButtonEnable(false);
+                    };
+                    GameObject.Find("PlayerLocal").GetComponent<PlayerHitObject>().OnHit += (name) =>
+                    {
+                        UIManagers.Instance.EnbleUIPopUp("CheckInPopup");
+                        GameObject.Find("CheckInPopup").GetComponent<CheckInPopup>().ShowIcon(name);
+                        GameObject.Find("CheckInPopup").GetComponent<CheckInPopup>().SetTextLabel(name);
+                    };
+                    //GameObject.Find("CheckInPopup").GetComponent<CheckInPopup>().OnCheckIn += (name) =>
+                    //{
+                    //    GameObject.Find("CheckInPopup").GetComponent<CheckInPopup>().DisableIcon(name);
+                    //    UIManagers.Instance.DisableUIPopUp("CheckInPopup");
+                    //};
                     break;
                 default:
                     break;

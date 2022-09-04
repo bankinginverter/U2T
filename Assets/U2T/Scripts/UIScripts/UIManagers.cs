@@ -5,13 +5,13 @@ using UnityEngine.UI;
 
 public class UIManagers : MonoBehaviour
 {
-    public static UIManagers instance;
+    public static UIManagers Instance;
 
     private GameObject canvas;
 
     private void Awake()
     {
-        instance = this;
+        Instance = this;
         canvas = GameObject.Find("Canvas");
     }
 

@@ -33,7 +33,7 @@ public class LobbyPhotonManager : MonoBehaviourPunCallbacks
         Debug.Log("Isconnected");
         _isPhotonConnected = true;
         AppStateManager.Instance.ChangeAppState(Enumulator.GameState.PHOTON_CONNECTED);
-        UIManagers.instance.DisableUIPopUp("PhotonConnectingPopup");
+        UIManagers.Instance.DisableUIPopUp("PhotonConnectingPopup");
     }
 
     public override void OnJoinedRoom()
