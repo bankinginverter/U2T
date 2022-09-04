@@ -39,6 +39,11 @@ public class Save
         PlayerPrefs.SetString("locations4", isActive);
     }
 
+    public void SaveCheckInSuccess()
+    {
+        PlayerPrefs.SetString("LocationsComplete", "Complete");
+    }
+
     public string GetUserName()
     {
         return PlayerPrefs.GetString("username");
@@ -72,5 +77,10 @@ public class Save
     public string GetCheckIn4()
     {
         return PlayerPrefs.GetString("locations4");
+    }
+
+    public string GetCheckInSuccess()
+    {
+        return PlayerPrefs.GetString("LocationsComplete");
     }
 }
