@@ -4,15 +4,15 @@ using UnityEngine;
 
 public class ClearSave : MonoBehaviour
 {
-    // Start is called before the first frame update
+    Save save;
+
     void Start()
     {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
+        save = new Save();
+        save.SaveCheckIn1("");
+        save.SaveCheckIn2("");
+        save.SaveCheckIn3("");
+        save.SaveCheckIn4("");
+        save.SaveCheckInSuccess("");
     }
 }

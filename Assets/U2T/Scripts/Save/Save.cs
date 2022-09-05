@@ -39,9 +39,9 @@ public class Save
         PlayerPrefs.SetString("locations4", isActive);
     }
 
-    public void SaveCheckInSuccess()
+    public void SaveCheckInSuccess(string status)
     {
-        PlayerPrefs.SetString("LocationsComplete", "Complete");
+        PlayerPrefs.SetString("LocationsComplete", status);
     }
 
     public string GetUserName()
