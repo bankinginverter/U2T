@@ -316,6 +316,19 @@ namespace U2T.Foundation
                                     GameObject.Find("PlayerLocal").transform.position = GameObject.Find("SpawnPlayer").transform.position;
                                 };
                             }
+                            if (name == "360ViewTrain")
+                            {
+                                UIManagers.Instance.EnbleUIPopUp("360ViewTrainPopup");
+                                GameObject.Find("360ViewTrainPopup").GetComponent<ViewTrainPopup>().OnView360Button += () =>
+                                {
+                                    GameObject.Find("PlayerLocal").transform.position = GameObject.Find("TrainWarp").transform.position;
+                                };
+                                GameObject.Find("360ViewTrainPopup").GetComponent<ViewTrainPopup>().OnExitPopup += () =>
+                                {
+                                    UIManagers.Instance.DisableUIPopUp("360ViewTrainPopup");
+                                    GameObject.Find("PlayerLocal").transform.position = GameObject.Find("SpawnPlayer").transform.position;
+                                };
+                            }
                         }
                     };
                     break;

@@ -13,12 +13,15 @@ public class ChatMessage : MonoBehaviourPun
     private PhotonView view;
     private InputField chatInputField;
     private Text updateText;
+    private Button _sendButton;
     private int countMessage = 0;
 
     string currentText = "";
 
     private void Awake()
     {
+        _sendButton = GameObject.Find("SendButton").GetComponent<Button>();
+        _sendButton.onClick.AddListener(SendMessageToOtherPlayerWithButton);
         view = GameObject.Find("ChatManager").GetComponent<PhotonView>();
         chatInputField = GameObject.Find("SendMessageBox").GetComponent<InputField>();
     }
@@ -49,6 +52,19 @@ public class ChatMessage : MonoBehaviourPun
             chatInputField.text = "";
             countMessage++;
         }
+    }
+
+    public void SendMessageToOtherPlayerWithButton()
+    {
+        ExplaneParentScale();
+        GameObject msgBox = Instantiate(Resources.Load("DialogBoxLocal") as GameObject);
+        msgBox.transform.parent = parent.transform;
+        msgBox.transform.localScale = new Vector3(1f, 1f, 1f);
+        msgBox.transform.GetChild(0).GetComponent<Text>().text = chatInputField.text + "  ";
+        currentText = chatInputField.text;
+        view.RPC("ISend", RpcTarget.Others, currentText);
+        chatInputField.text = "";
+        countMessage++;
     }
 
     private void ExplaneParentScale()

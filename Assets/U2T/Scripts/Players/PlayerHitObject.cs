@@ -39,7 +39,7 @@ public class PlayerHitObject : MonoBehaviour
         if (_currentObjectHit != null)
         {
             Debug.Log(Vector3.Distance(_currentObjectHit.transform.position, this.gameObject.transform.position));
-            if (Vector3.Distance(_currentObjectHit.transform.position, this.gameObject.transform.position) > 5f)
+            if (Vector3.Distance(_currentObjectHit.transform.position, this.gameObject.transform.position) > 3f)
             {
                 _playerHit = true;
                 _currentObjectHit = null;
