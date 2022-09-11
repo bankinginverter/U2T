@@ -34,8 +34,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 109.09262, y: -29.300003}
-  m_SizeDelta: {x: 4173.5317, y: 870.82}
+  m_AnchoredPosition: {x: 85.7, y: -29.300003}
+  m_SizeDelta: {x: 3433.8374, y: 948.99994}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &2605964156310415523
 CanvasRenderer:
@@ -845,7 +845,6 @@ GameObject:
   - component: {fileID: 2448238823743799549}
   - component: {fileID: 2448238823743799551}
   - component: {fileID: 2448238823743799548}
-  - component: {fileID: 2448238823743799547}
   m_Layer: 5
   m_Name: ChatUI
   m_TagString: Untagged
@@ -914,20 +913,6 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &2448238823743799547
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2448238823743799546}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 36583431e61d23f4199dc315d176113d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  ChatBox: {fileID: 2448238823743799546}
-  parent: {fileID: 2448238825074718910}
 --- !u!1 &2448238823761275713
 GameObject:
   m_ObjectHideFlags: 0
