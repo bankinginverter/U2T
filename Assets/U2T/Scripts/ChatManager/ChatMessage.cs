@@ -7,7 +7,7 @@ using TMPro;
 
 public class ChatMessage : MonoBehaviourPun
 {
-    [SerializeField] GameObject ChatBox;
+    [SerializeField] GameObject _chatBox;
     [SerializeField] RectTransform parent;
 
     private PhotonView view;
@@ -20,10 +20,11 @@ public class ChatMessage : MonoBehaviourPun
 
     private void Awake()
     {
-        _sendButton = GameObject.Find("SendButton").GetComponent<Button>();
-        _sendButton.onClick.AddListener(SendMessageToOtherPlayerWithButton);
-        view = GameObject.Find("ChatManager").GetComponent<PhotonView>();
-        chatInputField = GameObject.Find("SendMessageBox").GetComponent<InputField>();
+        //_sendButton = GameObject.Find("SendButton").GetComponent<Button>();
+        //_sendButton.onClick.AddListener(SendMessageToOtherPlayerWithButton);
+        view = GetComponent<PhotonView>();
+        //chatInputField = GameObject.Find("SendMessageBox").GetComponent<InputField>();
+        chatInputField = _chatBox.GetComponentInChildren<InputField>();
     }
 
     private void Update()
