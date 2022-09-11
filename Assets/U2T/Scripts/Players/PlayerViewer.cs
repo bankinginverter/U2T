@@ -12,13 +12,14 @@ public class PlayerViewer : MonoBehaviour
     KeyboardController keyboardController;
     private float xAxisRotation;
     private bool swtichView = true;
+    private bool _isActive = true;
 
     private void Awake()
     {
         Initialized();
         keyboardController.OnKeyDown += () =>
         {
-            if (Input.GetKeyDown(KeyCode.V))
+            if (Input.GetKeyDown(KeyCode.V) && _isActive)
             {
                 swtichView = !swtichView;
                 if (swtichView)
@@ -35,12 +36,15 @@ public class PlayerViewer : MonoBehaviour
 
     private void Update()
     {
-        float mouseX = Input.GetAxis("Mouse X") * 200f * Time.deltaTime;
-        float mouseY = Input.GetAxis("Mouse Y") * 200f * Time.deltaTime;
-        xAxisRotation += mouseY;
-        xAxisRotation = Mathf.Clamp(xAxisRotation, -90f, 90f);
-        transform.localRotation = Quaternion.Euler(xAxisRotation * -1, 0f, 0f);
-        playerClientTransfrom.Rotate(0f, mouseX, 0f);
+        if (_isActive)
+        {
+            float mouseX = Input.GetAxis("Mouse X") * 200f * Time.deltaTime;
+            float mouseY = Input.GetAxis("Mouse Y") * 200f * Time.deltaTime;
+            xAxisRotation += mouseY;
+            xAxisRotation = Mathf.Clamp(xAxisRotation, -90f, 90f);
+            transform.localRotation = Quaternion.Euler(xAxisRotation * -1, 0f, 0f);
+            playerClientTransfrom.Rotate(0f, mouseX, 0f);
+        }
     }
 
     private void Initialized()
@@ -56,5 +60,10 @@ public class PlayerViewer : MonoBehaviour
     private void ChangeCameraViewTPS()
     {
         this.transform.localPosition = new Vector3(0f, 3.05f, tps);
+    }
+
+    public void SetActiveViewer(bool isActive)
+    {
+        _isActive = isActive;
     }
 }

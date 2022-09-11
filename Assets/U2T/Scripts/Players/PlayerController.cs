@@ -14,6 +14,7 @@ public class PlayerController : MonoBehaviour
     private float _speedCurrent = 5f;
     private float _speed = 0f;
     private float _gravity = -20f;
+    private bool _isActive = true;
 
     private void Awake()
     {
@@ -35,7 +36,7 @@ public class PlayerController : MonoBehaviour
         keyboardController.OnKeyDown += () =>
         {
             focusUI.FocusOnGUI();
-            if (focusUI.Focus())
+            if (focusUI.Focus() && _isActive)
             {
                 if (Input.GetKey(KeyCode.W))
                 {
@@ -79,5 +80,10 @@ public class PlayerController : MonoBehaviour
         Vector3 _move = transform.TransformDirection(Vector3.right * _speed);
         _move.y += _gravity;
         _characterController.Move(_move * Time.deltaTime);
+    }
+
+    public void SetActivePlayer(bool isActive)
+    {
+        _isActive = isActive;
     }
 }
