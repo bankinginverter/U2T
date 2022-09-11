@@ -4,6 +4,10 @@ using UnityEngine;
 
 public class MainGamePlay : MonoBehaviour
 {
+    public delegate void GeneralDelegate();
+    public GeneralDelegate OnLock = null;
+    public GeneralDelegate OnUnLock = null;
+
     PlayerTransform _playerTransform;
     bool _stateMouse = false;
 
@@ -15,19 +19,20 @@ public class MainGamePlay : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Escape))
+        if (Input.GetKeyDown(KeyCode.Tab))
         {
             if (_stateMouse)
             {
                 Cursor.lockState = CursorLockMode.Locked;
+                OnUnLock?.Invoke();
             }
             else
             {
                 Cursor.lockState = CursorLockMode.Confined;
+                OnLock?.Invoke();
             }
             _stateMouse = !_stateMouse;
         }
-        Debug.Log(_stateMouse);
         _playerTransform.TransformPlayer();
     }
 }
