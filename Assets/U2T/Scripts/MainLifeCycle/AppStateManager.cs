@@ -143,7 +143,10 @@ namespace U2T.Foundation
                     break;
                 case Enumulator.GameState.GAMEPLAY_START:
                     Debug.Log("AppState : GameState.GAME_START");
-                    UIManagers.Instance.EnbleUIPopUp("GeneralMenuPopup");
+                    PlayerManager _playerManager = new PlayerManager();
+                    _playerManager.AddPlayerToList(GameObject.Find("PlayerLocal").gameObject);
+
+                    //UIManagers.Instance.EnbleUIPopUp("GeneralMenuPopup");
                     GameObject.Find("GeneralMenuPopup").GetComponent<GeneralMenuPopup>().OnPassported += () =>
                     {
                         UIManagers.Instance.EnbleUIPopUp("PassportHistoryPopup");
@@ -203,8 +206,11 @@ namespace U2T.Foundation
                         UIManagers.Instance.DisableUIPopUp("PassportHistoryPopup");
                         GameObject.Find("GeneralMenuPopup").GetComponent<GeneralMenuPopup>().SetExitButtonEnable(false);
                     };
-                    GameObject.Find("PlayerLocal").GetComponent<PlayerHitObject>().OnHit += (name,tag) =>
+                    GameObject.Find("PlayerLocal").GetComponent<PlayerHitObject>().OnDetect += (name,tag) =>
                     {
+                        Debug.Log(_playerManager.GetPlayerFromList(0));
+                        _playerManager.InActivePlayer();
+                        _playerManager.InActivePlayerViewer();
                         if (tag == "Item")
                         {
                             UIManagers.Instance.EnbleUIPopUp("CheckInPopup");
@@ -233,6 +239,8 @@ namespace U2T.Foundation
                             GameObject.Find("CheckInPopup").GetComponent<CheckInPopup>().OnCheckIn += (nameIconforDestory) =>
                             {
                                 UIManagers.Instance.DisableUIPopUp("CheckInPopup");
+                                _playerManager.ActivePlayer();
+                                _playerManager.ActivePlayerViewer();
                             };
                         }
                         if (tag == "Gallery")
@@ -243,6 +251,8 @@ namespace U2T.Foundation
                                 GameObject.Find("GalleryDonomPopup").GetComponent<GalleryDonomPopup>().OnExitPopup += () =>
                                 {
                                     UIManagers.Instance.DisableUIPopUp("GalleryDonomPopup");
+                                    _playerManager.ActivePlayer();
+                                    _playerManager.ActivePlayerViewer();
                                 };
                             }
                             if (name == "GalleryPhotharam")
@@ -251,6 +261,8 @@ namespace U2T.Foundation
                                 GameObject.Find("GalleryPhotharamPopup").GetComponent<GalleryPhotharamPopup>().OnExitPopup += () =>
                                 {
                                     UIManagers.Instance.DisableUIPopUp("GalleryPhotharamPopup");
+                                    _playerManager.ActivePlayer();
+                                    _playerManager.ActivePlayerViewer();
                                 };
                             }
                             if (name == "GalleryRiver")
@@ -259,6 +271,8 @@ namespace U2T.Foundation
                                 GameObject.Find("GalleryRiverPopup").GetComponent<GalleryRiverPopup>().OnExitPopup += () =>
                                 {
                                     UIManagers.Instance.DisableUIPopUp("GalleryRiverPopup");
+                                    _playerManager.ActivePlayer();
+                                    _playerManager.ActivePlayerViewer();
                                 };
                             }
                         }
@@ -270,10 +284,12 @@ namespace U2T.Foundation
                                 GameObject.Find("360ViewDonomPopup").GetComponent<ViewDonomPopup>().OnView360Button += () => 
                                 {
                                     GameObject.Find("PlayerLocal").transform.position = GameObject.Find("DonomWarp").transform.position;
+                                    _playerManager.ActivePlayerViewer();
                                 };
                                 GameObject.Find("360ViewDonomPopup").GetComponent<ViewDonomPopup>().OnExitPopup += () =>
                                 {
                                     UIManagers.Instance.DisableUIPopUp("360ViewDonomPopup");
+                                    _playerManager.ActivePlayer();
                                     GameObject.Find("PlayerLocal").transform.position = GameObject.Find("SpawnPlayer").transform.position;
                                 };
                             }
@@ -283,10 +299,12 @@ namespace U2T.Foundation
                                 GameObject.Find("360ViewPhotharamPopup").GetComponent<ViewPhotharamPopup>().OnView360Button += () =>
                                 {
                                     GameObject.Find("PlayerLocal").transform.position = GameObject.Find("PhotharamWarp").transform.position;
+                                    _playerManager.ActivePlayerViewer();
                                 };
                                 GameObject.Find("360ViewPhotharamPopup").GetComponent<ViewPhotharamPopup>().OnExitPopup += () =>
                                 {
                                     UIManagers.Instance.DisableUIPopUp("360ViewPhotharamPopup");
+                                    _playerManager.ActivePlayer();
                                     GameObject.Find("PlayerLocal").transform.position = GameObject.Find("SpawnPlayer").transform.position;
                                 };
                             }
@@ -296,10 +314,12 @@ namespace U2T.Foundation
                                 GameObject.Find("360ViewRiverPopup").GetComponent<ViewRiverPopup>().OnView360Button += () =>
                                 {
                                     GameObject.Find("PlayerLocal").transform.position = GameObject.Find("RiverWarp").transform.position;
+                                    _playerManager.ActivePlayerViewer();
                                 };
                                 GameObject.Find("360ViewRiverPopup").GetComponent<ViewRiverPopup>().OnExitPopup += () =>
                                 {
                                     UIManagers.Instance.DisableUIPopUp("360ViewRiverPopup");
+                                    _playerManager.ActivePlayer();
                                     GameObject.Find("PlayerLocal").transform.position = GameObject.Find("SpawnPlayer").transform.position;
                                 };
                             }
@@ -309,10 +329,12 @@ namespace U2T.Foundation
                                 GameObject.Find("360ViewKatomSatuPopup").GetComponent<ViewKatomSatuPopup>().OnView360Button += () =>
                                 {
                                     GameObject.Find("PlayerLocal").transform.position = GameObject.Find("KatomSatuWarp").transform.position;
+                                    _playerManager.ActivePlayerViewer();
                                 };
                                 GameObject.Find("360ViewKatomSatuPopup").GetComponent<ViewKatomSatuPopup>().OnExitPopup += () =>
                                 {
                                     UIManagers.Instance.DisableUIPopUp("360ViewKatomSatuPopup");
+                                    _playerManager.ActivePlayer();
                                     GameObject.Find("PlayerLocal").transform.position = GameObject.Find("SpawnPlayer").transform.position;
                                 };
                             }
@@ -322,14 +344,26 @@ namespace U2T.Foundation
                                 GameObject.Find("360ViewTrainPopup").GetComponent<ViewTrainPopup>().OnView360Button += () =>
                                 {
                                     GameObject.Find("PlayerLocal").transform.position = GameObject.Find("TrainWarp").transform.position;
+                                    _playerManager.ActivePlayerViewer();
                                 };
                                 GameObject.Find("360ViewTrainPopup").GetComponent<ViewTrainPopup>().OnExitPopup += () =>
                                 {
                                     UIManagers.Instance.DisableUIPopUp("360ViewTrainPopup");
+                                    _playerManager.ActivePlayer();
                                     GameObject.Find("PlayerLocal").transform.position = GameObject.Find("SpawnPlayer").transform.position;
                                 };
                             }
                         }
+                    };
+                    GameObject.Find("MainGamePlay").GetComponent<MainGamePlay>().OnLock += () =>
+                    {
+                        _playerManager.InActivePlayer();
+                        _playerManager.InActivePlayerViewer();
+                    };
+                    GameObject.Find("MainGamePlay").GetComponent<MainGamePlay>().OnUnLock += () =>
+                    {
+                        _playerManager.ActivePlayer();
+                        _playerManager.ActivePlayerViewer();
                     };
                     break;
                 //case Enumulator.GameState.CHECKIN_POPUP:
