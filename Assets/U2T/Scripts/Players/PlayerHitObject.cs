@@ -4,8 +4,10 @@ using UnityEngine;
 
 public class PlayerHitObject : MonoBehaviour
 {
-    public delegate void PlayerHitObjectDelegate(string name, string tag);
-    public PlayerHitObjectDelegate OnHit = null;
+    public delegate void PlayerDetectObjectDelegate(string name, string tag);
+    public delegate void PlayerUnDetectObjectDelegate();
+    public PlayerDetectObjectDelegate OnDetect = null;
+    public PlayerUnDetectObjectDelegate UnDetect = null;
 
     private GameObject _currentObjectHit = null;
     private bool _playerHit = true;
@@ -15,7 +17,8 @@ public class PlayerHitObject : MonoBehaviour
         if (hit.collider.tag == "Item")
         {
             Debug.Log(hit.collider.name);
-            OnHit?.Invoke(hit.collider.name,hit.collider.tag);
+            OnDetect?.Invoke(hit.collider.name,hit.collider.tag);
+            _currentObjectHit = hit.gameObject;
             GameObject temp = GameObject.Find(hit.collider.name);
             Destroy(temp);
         }
@@ -24,7 +27,7 @@ public class PlayerHitObject : MonoBehaviour
         {
             _playerHit = false;
             Debug.Log(hit.collider.name);
-            OnHit?.Invoke(hit.collider.name, hit.collider.tag);
+            OnDetect?.Invoke(hit.collider.name, hit.collider.tag);
             _currentObjectHit = hit.gameObject;
         }
 
@@ -32,10 +35,10 @@ public class PlayerHitObject : MonoBehaviour
         {
             _playerHit = false;
             Debug.Log(hit.collider.name);
-            OnHit?.Invoke(hit.collider.name, hit.collider.tag);
+            OnDetect?.Invoke(hit.collider.name, hit.collider.tag);
             _currentObjectHit = hit.gameObject;
+            Cursor.lockState = CursorLockMode.Confined;
         }
-
         if (_currentObjectHit != null)
         {
             Debug.Log(Vector3.Distance(_currentObjectHit.transform.position, this.gameObject.transform.position));
