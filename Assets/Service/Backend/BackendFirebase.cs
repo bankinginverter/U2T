@@ -3,30 +3,36 @@ using System.Collections.Generic;
 using UnityEngine;
 using Proyecto26;
 
-public class BackendFirebase : MonoBehaviour
+public class BackendFirebase
 {
+    public string _databaseUrl = "https://photharammetaverse-default-rtdb.asia-southeast1.firebasedatabase.app/";
+    private RequestHelper currentRequest;
+    UserPlayer user = new UserPlayer();
 
-    private void Start()
+
+    public void saveDataToDatabase(string username, string password)
     {
-        PostToDataBase();
+        user.UserName = username;
+
+        RestClient.Put<UserPlayer>(_databaseUrl + "/" + user.UserName + ".json", new UserPlayer
+        {
+            UserName = username,
+            Password = password,
+        });
     }
 
-    private void PostToDataBase()
+    public void ReadData(string username)
     {
-        Player p1 = new Player("banking", "12345678");
-        RestClient.Post("https://u2twebgl-default-rtdb.asia-southeast1.firebasedatabase.app/.json",p1);
-        //Debug.Log(RestClient.Get("https://u2twebgl-default-rtdb.asia-southeast1.firebasedatabase.app/.json"));
+        RestClient.Get<UserPlayer>(_databaseUrl + "/"+ username + ".json").Then(response =>
+        {
+            user = response;
+            Debug.Log(user.UserName);
+        });
     }
 }
 
-public class Player
+public class UserPlayer
 {
-    string _username;
-    string _password;
-
-    public Player(string username, string password)
-    {
-        _username = username;
-        _password = password;
-    }
+    public string UserName;
+    public string Password;
 }

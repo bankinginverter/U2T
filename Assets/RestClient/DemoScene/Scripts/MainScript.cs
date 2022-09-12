@@ -7,7 +7,7 @@ using UnityEngine.Networking;
 
 public class MainScript : MonoBehaviour {
 
-	private readonly string basePath = "https://jsonplaceholder.typicode.com";
+	private readonly string basePath = "https://photharammetaverse-default-rtdb.asia-southeast1.firebasedatabase.app/";
 	private RequestHelper currentRequest;
 
 	private void LogMessage(string title, string message) {
