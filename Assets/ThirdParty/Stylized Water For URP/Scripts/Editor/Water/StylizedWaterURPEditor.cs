@@ -45,7 +45,12 @@ namespace StylizedWater
         #region Shore Color
         SerializedProperty shoreFade, shoreColor, shoreDepth, shoreBlend;
         #endregion
-        
+
+        #region Caustics [LEGACY]
+        SerializedProperty causticsTexture, causticsStrength, causticsSplit, causticsSpeed, causticsScale, causticsShadowMask, causticsDepth;
+        SerializedProperty useLegacyCaustics;
+        #endregion
+
         #region Intersection Effects
         SerializedProperty intersectionFoamBlend, intersectionWaterBlend, intersectionFoamColor, intersectionFoamDirection, intersectionFoamScale, intersectionFoamSpeed,
         intersectionFoamCutoff, intersectionFoamDistortion,
@@ -93,7 +98,7 @@ namespace StylizedWater
         #endregion
 
         #region Sections
-        SerializedProperty surfaceFoamExpanded, intersectionEffectsExpanded, foamShadowsExpanded, refractionExpanded, planarReflectionsExpanded;
+        SerializedProperty surfaceFoamExpanded, intersectionEffectsExpanded, causticsExpanded, foamShadowsExpanded, refractionExpanded, planarReflectionsExpanded;
         #endregion
 
         #region Waves
@@ -109,6 +114,7 @@ namespace StylizedWater
         private static bool colorTransparencySettings,
              surfaceFoamSettings,
              intersectionFoamSettings,
+             causticsSettings,
              surfaceSettings,
              refractionSettings,
              planarReflectionSettings,
@@ -227,7 +233,10 @@ namespace StylizedWater
             if (name == shaderName)
             {
                 DrawPropertiesInspector(CoreEditorUtils.DrawHeaderToggle(EditorGUIUtility.TrTextContent("Foam Shadows"), foamShadowsExpanded, enableFoamShadows, null), DrawFoamShadowSettings);
-                
+
+                causticsSettings = CoreEditorUtils.DrawHeaderFoldout("Caustics", causticsSettings, false, (Func<bool>)null, null);
+                DrawPropertiesInspector(causticsSettings, DrawCausticsSettings);
+
                 planarReflectionSettings = CoreEditorUtils.DrawHeaderFoldout("Planar Reflections", planarReflectionSettings, false, (Func<bool>)null, null);
                 DrawPropertiesInspector(planarReflectionSettings, DrawPlanarReflectionSettings);
 
@@ -479,6 +488,38 @@ namespace StylizedWater
             EditorGUILayout.Space(); EditorGUILayout.Space();
         }
 
+        void DrawCausticsSettings()
+        {
+            EditorGUILayout.Space();
+            EditorGUILayout.PropertyField(useLegacyCaustics, EditorGUIUtility.TrTextContent("Legacy Caustics"));
+            EditorGUILayout.Space();
+            if (useLegacyCaustics.boolValue)
+            {
+                EditorGUILayout.PropertyField(causticsTexture, EditorGUIUtility.TrTextContent("Texture"));
+                EditorGUILayout.PropertyField(causticsStrength, EditorGUIUtility.TrTextContent("Strength"));
+                EditorGUILayout.PropertyField(causticsScale, EditorGUIUtility.TrTextContent("Scale"));
+                EditorGUILayout.PropertyField(causticsSpeed, EditorGUIUtility.TrTextContent("Speed"));
+                EditorGUILayout.PropertyField(causticsSplit, EditorGUIUtility.TrTextContent("RGB Split"));
+                EditorGUILayout.PropertyField(causticsShadowMask, EditorGUIUtility.TrTextContent("Shadow Mask"));
+                EditorGUILayout.PropertyField(causticsDepth, EditorGUIUtility.TrTextContent("Depth"));
+            }
+
+            else
+            {
+                EditorGUILayout.HelpBox("Caustics should now be added as a custom renderer feature to the pipeline asset.", MessageType.Info);
+                EditorGUILayout.Space();
+
+                if (GUILayout.Button("Go to pipeline asset", EditorStyles.miniButton))
+                {
+                    BindingFlags bindings = System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance;
+                    ScriptableRendererData[] m_rendererDataList = (ScriptableRendererData[])typeof(UniversalRenderPipelineAsset).GetField("m_RendererDataList", bindings).GetValue(UniversalRenderPipeline.asset);
+                    EditorGUIUtility.PingObject(m_rendererDataList[0]);
+                }
+            }
+
+            EditorGUILayout.Space(); EditorGUILayout.Space();
+        }
+
         void DrawRefractionSettings()
         {
             EditorGUILayout.Space();
@@ -576,6 +617,7 @@ namespace StylizedWater
             #region Sections
             surfaceFoamExpanded = serializedObject.FindProperty("surfaceFoamExpanded");
             intersectionEffectsExpanded = serializedObject.FindProperty("intersectionEffectsExpanded");
+            causticsExpanded = serializedObject.FindProperty("causticsExpanded");
             foamShadowsExpanded = serializedObject.FindProperty("foamShadowsExpanded");
             refractionExpanded = serializedObject.FindProperty("refractionExpanded");
             planarReflectionsExpanded = serializedObject.FindProperty("planarReflectionsExpanded");
@@ -604,6 +646,17 @@ namespace StylizedWater
             shoreDepth = serializedObject.FindProperty("shoreDepth");
             shoreFade = serializedObject.FindProperty("shoreFade");
             shoreBlend = serializedObject.FindProperty("shoreBlend");
+            #endregion
+
+            #region Caustics [LEGACY]
+            causticsTexture = serializedObject.FindProperty("causticsTexture");
+            causticsStrength = serializedObject.FindProperty("causticsStrength");
+            causticsSplit = serializedObject.FindProperty("causticsSplit");
+            causticsSpeed = serializedObject.FindProperty("causticsSpeed");
+            causticsScale = serializedObject.FindProperty("causticsScale");
+            causticsShadowMask = serializedObject.FindProperty("causticsShadowMask");
+            causticsDepth = serializedObject.FindProperty("causticsDepth");
+            useLegacyCaustics = serializedObject.FindProperty("useLegacyCaustics");
             #endregion
 
             #region Refraction

@@ -9,11 +9,12 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: Windwaker
   m_Shader: {fileID: -6465566751694194690, guid: a9aea49e19495174f80f910ddb189a37, type: 3}
-  m_ShaderKeywords: FOAM_SHADOWS_ON INTERSECTION_EFFECTS_ON WATER_LIGHTING_ON
+  m_ShaderKeywords: FOAM_SHADOWS_ON INTERSECTION_EFFECTS_ON SURFACE_FOAM_ON WATER_LIGHTING_ON
+    WORLD_SPACE_UV_ON
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
-  m_CustomRenderQueue: 3000
+  m_CustomRenderQueue: -1
   stringTagMap: {}
   disabledShaderPasses: []
   m_SavedProperties:
@@ -48,8 +49,6 @@ Material:
     - _IntersectionFoamDepth: 0.72
     - _IntersectionFoamScale: 0.19
     - _IntersectionWaterBlend: 0
-    - _QueueControl: 1
-    - _QueueOffset: 0
     - _RefractionStrength: 0.017
     - _ShoreBlend: 0
     - _ShoreDepth: 0
@@ -62,18 +61,18 @@ Material:
     - _IntersectionFoamMovement: {r: 0, g: 0, b: 0, a: 0}
     - _IntersectionFoamSampling: {r: 1, g: 0, b: 0, a: 0}
     - _NormalsMovement: {r: 0.04, g: 0.36, b: 0, a: 0}
-    - _ShoreColor: {r: 0, g: 0.98039216, b: 0.30196065, a: 0}
+    - _ShoreColor: {r: 0, g: 0.98039216, b: 0.30195928, a: 0}
     - _SurfaceFoamColor1: {r: 1, g: 1, b: 1, a: 0.3215686}
     - _SurfaceFoamColor2: {r: 1, g: 1, b: 1, a: 0.7294118}
-    - _SurfaceFoamMovement: {r: 0.7, g: 0, b: 0.47, a: 0.01}
+    - _SurfaceFoamMovement: {r: 0.7, g: 0, b: 0.7, a: 0.01}
     - _SurfaceFoamSampling: {r: 0.62, g: 0, b: 0, a: 0}
-    - _SurfaceFoamTilingAndOffset: {r: -1, g: -1, b: 0.57, a: 0.22}
-    - _WaterColorDeep: {r: 0, g: 0.42745084, b: 0.6784314, a: 1}
-    - _WaterColorHorizon: {r: 0, g: 0.22745085, b: 0.8, a: 1}
+    - _SurfaceFoamTilingAndOffset: {r: -1, g: -1, b: 1.8, a: 1.8}
+    - _WaterColorDeep: {r: 0, g: 0.4274495, b: 0.6784314, a: 1}
+    - _WaterColorHorizon: {r: 0, g: 0.2274495, b: 0.8, a: 1}
     - _WaterColorShallow: {r: 0, g: 0.6313726, b: 1, a: 1}
     - _WaveColor: {r: 0, g: 0, b: 0, a: 0}
     - _WaveDirections: {r: 0, g: 0.64, b: 1, a: 0.33}
-    - _WaveVisuals: {r: 0.055, g: 7.9, b: 1.38, a: 0}
+    - _WaveVisuals: {r: 0.05, g: 7.9, b: 1.38, a: 0}
   m_BuildTextureStacks: []
 --- !u!114 &3884871068361501984
 MonoBehaviour:
@@ -87,4 +86,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d0353a89b1f911e48b9e16bdc9f2e058, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  version: 5
+  version: 2

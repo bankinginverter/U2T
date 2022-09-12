@@ -25,6 +25,7 @@ namespace StylizedWater
         public bool foamShadowsExpanded;
         public bool intersectionEffectsExpanded;
         public bool planarReflectionsExpanded;
+        public bool causticsExpanded;
         #endregion
 
         private const string shaderName = "Stylized Water";
@@ -35,7 +36,19 @@ namespace StylizedWater
         [Range(0f, 1f)] public float reflectionStrength = 0f;
         [Range(0f, 7f)] public float reflectionFresnel = 1f;
         #endregion
-        
+
+        #region Caustics [LEGACY]
+        [Range(0f, 5f)] public float causticsStrength;
+        public Texture causticsTexture;
+        [Range(0f, 1f)] public float causticsSplit;
+        [Range(0f, 0.3f)] public float causticsSpeed;
+        [Range(0f, 10f)] public float causticsScale;
+        [Range(0f, 1f)] public float causticsShadowMask;
+        public Matrix4x4 causticsLightMatrix;
+        public bool useLegacyCaustics;
+        [Range(0f, 10f)] public float causticsDepth;
+        #endregion
+
         #region Colors and Transparency
         public bool useColorGradient;
         [GradientUsage(true)] public Gradient colorGradient;
@@ -284,6 +297,17 @@ namespace StylizedWater
                 colorGradientTexture = (Texture2D)material.GetTexture("_WaterColorGradientTexture");
                 #endregion
 
+                #region Caustics [LEGACY]
+                causticsStrength = material.GetFloat("_CausticsStrength");
+                causticsTexture = material.GetTexture("_CausticsTexture");
+                causticsSplit = material.GetFloat("_CausticsSplit");
+                causticsSpeed = material.GetFloat("_CausticsSpeed");
+                causticsScale = material.GetFloat("_CausticsScale");
+                causticsShadowMask = material.GetFloat("_CausticsShadowMask");
+                causticsDepth = material.GetFloat("_CausticsDepth");
+                //causticsLightMatrix = material.GetMatrix("_CausticsLightMatrix");
+                #endregion
+
                 #region Underwater Effects
                 underwaterRefractionStrength = material.GetFloat("_UnderwaterRefractionStrength");
                 #endregion
@@ -373,6 +397,17 @@ namespace StylizedWater
             material.SetFloat("_WaterColorHorizonDistance", horizonDistance);
             material.SetColor("_WaveColor", waveColor);
             material.SetColor("_WaterColorDeep", deepColor);
+            #endregion
+
+            #region Caustics [LEGACY]
+            material.SetFloat("_CausticsStrength", causticsStrength);
+            material.SetTexture("_CausticsTexture", causticsTexture);
+            material.SetFloat("_CausticsSplit", causticsSplit);
+            material.SetFloat("_CausticsSpeed", causticsSpeed);
+            material.SetFloat("_CausticsScale", causticsScale);
+            material.SetFloat("_CausticsShadowMask", causticsShadowMask);
+            material.SetFloat("_CausticsDepth", causticsDepth);
+            //material.SetMatrix("_CausticsLightMatrix", causticsLightMatrix);
             #endregion
 
             #region Underwater Effects

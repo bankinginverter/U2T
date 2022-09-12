@@ -3,58 +3,50 @@
 // https://alexander-ameye.gitbook.io/stylized-water/
 //━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━	
 
-using System;
-using System.Linq;
 using UnityEngine;
 using UnityEngine.UIElements;
 using UnityEngine.Rendering;
 using UnityEditor;
 using UnityEditor.PackageManager;
 using UnityEditor.PackageManager.Requests;
-using System.Reflection;
-using UnityEngine.Rendering.Universal;
 
 namespace StylizedWater
 {
     class RunOnImport : AssetPostprocessor
     {
         private static string registryKeyShowWindow = "ameye.stylizedwaterforurp.showsupportwindow";
-        public static bool shouldshowSupportWindow
+        public static bool showWindow
         {
             get { return EditorPrefs.GetBool(registryKeyShowWindow, true); }
             set { EditorPrefs.SetBool(registryKeyShowWindow, value); }
         }
 
-        static RunOnImport() => EditorApplication.update += OpenSupportWindow;
+        static RunOnImport() => EditorApplication.update += CheckToOpenSupportWindow;
 
-        static void OpenSupportWindow()
+        static void CheckToOpenSupportWindow()
         {
-            if (!EditorApplication.isUpdating && shouldshowSupportWindow)
+            if (!EditorApplication.isUpdating && showWindow)
             {
                 SupportWindow.ShowWindow();
-                shouldshowSupportWindow = false;
-                EditorApplication.update -= OpenSupportWindow;
+                showWindow = false;
+                EditorApplication.update -= CheckToOpenSupportWindow;
             }
         }
     }
 
     public class SupportWindow : EditorWindow
     {
-        private const string SupportedText = "Supported";
-        private const string NotTestedText = "Not tested";
-        private const string NotSupportedText = "Not supported";
-        
         private VisualElement root;
 
         private VisualElement supportTab;
         private VisualElement aboutTab;
         private VisualElement acknowledgementsTab;
-        private VisualElement detectIssuestab;
+        private VisualElement errorsTab;
 
         private VisualTreeAsset support;
         private VisualTreeAsset about;
         private VisualTreeAsset acknowledgements;
-        private VisualTreeAsset detectIssues;
+        private VisualTreeAsset errors;
 
         private StyleSheet styleSheet;
 
@@ -69,7 +61,6 @@ namespace StylizedWater
         static Label opaqueTextureLabel;
         static Label graphicsAPILabel;
         static Label planarReflectionsLabel;
-        static Label shaderVariantLimitLabel;
 
         static VisualElement unityVersionIcon;
         static VisualElement activeRendererIcon;
@@ -78,7 +69,6 @@ namespace StylizedWater
         static VisualElement opaqueTextureIcon;
         static VisualElement graphicsAPIIcon;
         static VisualElement planarReflectionsIcon;
-        static VisualElement shaderVariantLimitIcon;
 
         static Button unityVersionFix;
         static Button URPVersionFix;
@@ -87,13 +77,13 @@ namespace StylizedWater
         static Button opaqueTextureFix;
         static Button graphicsAPIFix;
         static Button planarReflectionsFix;
-        static Button shaderVariantLimitFix;
 
         static Button aboutButton;
         static Button supportButton;
         static Button configureButton;
         static Button acknowledgementsButton;
         static Button graphicsAPIButton;
+        static Button planarReflectionsButton;
 
         static Texture2D neutral;
         static Texture2D positive;
@@ -129,27 +119,27 @@ namespace StylizedWater
             root = this.rootVisualElement;
             supportTab = new VisualElement();
             aboutTab = new VisualElement();
-            detectIssuestab = new VisualElement();
+            errorsTab = new VisualElement();
             acknowledgementsTab = new VisualElement();
 
-            support = GetUXML("StylizedWaterSupport");
-            about = GetUXML("StylizedWaterAbout");
-            acknowledgements = GetUXML("StylizedWaterAcknowledgements");
-            detectIssues = GetUXML("StylizedWaterDetectIssues");
+            support = GetUXML("Support");
+            about = GetUXML("About");
+            acknowledgements = GetUXML("Acknowledgements");
+            errors = GetUXML("Find Errors");
 
             if (support) support.CloneTree(supportTab);
             if (about) about.CloneTree(aboutTab);
             if (acknowledgements) acknowledgements.CloneTree(acknowledgementsTab);
-            if (detectIssues) detectIssues.CloneTree(detectIssuestab);
+            if (errors) errors.CloneTree(errorsTab);
 
             root.Add(supportTab);
             root.Add(aboutTab);
             root.Add(acknowledgementsTab);
-            root.Add(detectIssuestab);
+            root.Add(errorsTab);
 
             supportTab.style.display = DisplayStyle.None;
             aboutTab.style.display = DisplayStyle.None;
-            detectIssuestab.style.display = DisplayStyle.Flex;
+            errorsTab.style.display = DisplayStyle.Flex;
             acknowledgementsTab.style.display = DisplayStyle.None;
 
             unityVersionLabel = root.Q<Label>("Unity Version");
@@ -159,7 +149,6 @@ namespace StylizedWater
             opaqueTextureLabel = root.Q<Label>("Opaque Texture");
             graphicsAPILabel = root.Q<Label>("Graphics_API");
             planarReflectionsLabel = root.Q<Label>("Planar_Reflections");
-            shaderVariantLimitLabel = root.Q<Label>("Shader_Variant_Limit");
 
             unityVersionIcon = root.Q<VisualElement>("Unity Version Icon");
             activeRendererIcon = root.Q<VisualElement>("Active Renderer Icon");
@@ -168,7 +157,6 @@ namespace StylizedWater
             opaqueTextureIcon = root.Q<VisualElement>("Opaque Texture Icon");
             graphicsAPIIcon = root.Q<VisualElement>("Graphics_API_Icon");
             planarReflectionsIcon = root.Q<VisualElement>("Planar_Reflections_Icon");
-            shaderVariantLimitIcon = root.Q<VisualElement>("Shader_Variant_Limit_Icon");
 
             unityVersionFix = root.Q<Button>("Unity Version Fix");
             activeRendererFix = root.Q<Button>("Active Renderer Fix");
@@ -177,19 +165,16 @@ namespace StylizedWater
             opaqueTextureFix = root.Q<Button>("Opaque Texture Fix");
             graphicsAPIFix = root.Q<Button>("Graphics_API_Fix");
             planarReflectionsFix = root.Q<Button>("Planar_Reflections_Fix");
-            shaderVariantLimitFix = root.Q<Button>("Shader_Variant_Limit_Fix");
 
             supportButton = root.Q<Button>("SupportButton");
             aboutButton = root.Q<Button>("AboutButton");
             acknowledgementsButton = root.Q<Button>("AcknowledgementsButton");
             configureButton = root.Q<Button>("ConfigureButton");
-            
-            neutral = AssetDatabase.LoadAssetAtPath<Texture2D>(
-                "Assets/Stylized Water For URP/Scripts/UI/Icons/Neutral.png");
-            positive = AssetDatabase.LoadAssetAtPath<Texture2D>(
-                "Assets/Stylized Water For URP/Scripts/UI/Icons/Positive.png");
-            negative = AssetDatabase.LoadAssetAtPath<Texture2D>(
-                "Assets/Stylized Water For URP/Scripts/UI/Icons/Negative.png");
+            planarReflectionsButton = root.Q<Button>("Planar_Reflections_Button");
+
+            neutral = Resources.Load<Texture2D>("Icons/Neutral");
+            positive = Resources.Load<Texture2D>("Icons/Positive");
+            negative = Resources.Load<Texture2D>("Icons/Negative");
 
             root.Query<Button>().ForEach((button) =>
                {
@@ -199,19 +184,31 @@ namespace StylizedWater
             SetUnchecked();
         }
 
-        private static PipelineType DetectRenderPipeline()
+        public static PipelineType DetectPipeline()
         {
-            if (GraphicsSettings.renderPipelineAsset == null) return PipelineType.Default;
-            var type = GraphicsSettings.renderPipelineAsset.GetType().ToString();
-            if (type.Contains("HDRenderPipelineAsset")) return PipelineType.HighDefinition;
-            if (type.Contains("UniversalRenderPipelineAsset")) return PipelineType.Universal;
-            if (type.Contains("LightweightRenderPipelineAsset")) return PipelineType.Lightweight;
-            return PipelineType.Custom;
+            if (GraphicsSettings.renderPipelineAsset != null)
+            {
+                var type = GraphicsSettings.renderPipelineAsset.GetType().ToString();
+                if (type.Contains("HDRenderPipelineAsset")) return PipelineType.HighDefinition;
+                else if (type.Contains("UniversalRenderPipelineAsset")) return PipelineType.Universal;
+                else if (type.Contains("LightweightRenderPipelineAsset")) return PipelineType.Lightweight;
+                else return PipelineType.Custom;
+            }
+            return PipelineType.Default;
         }
 
-        private static VisualTreeAsset GetUXML(string name)
+        public static StyleSheet GetStyleSheet(string name)
         {
-            var guids = AssetDatabase.FindAssets($"t:{nameof(VisualTreeAsset)} {name}");
+            string[] guids = AssetDatabase.FindAssets($"t:{nameof(StyleSheet)} {name}");
+            if (guids.Length == 0)
+                return null;
+            var sheet = AssetDatabase.LoadAssetAtPath<StyleSheet>(AssetDatabase.GUIDToAssetPath(guids[0]));
+            return sheet;
+        }
+
+        public static VisualTreeAsset GetUXML(string name)
+        {
+            string[] guids = AssetDatabase.FindAssets($"t:{nameof(VisualTreeAsset)} {name}");
             if (guids.Length == 0)
                 return null;
             var uxml = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>(AssetDatabase.GUIDToAssetPath(guids[0]));
@@ -221,102 +218,121 @@ namespace StylizedWater
         private void Clickedbutton(EventBase tab)
         {
             Button button = tab.target as Button;
-            if (button == null) return;
-
-            switch (button.name)
+            if (button.name == "SupportButton")
             {
-                case "SupportButton":
-                    supportTab.style.display = DisplayStyle.Flex;
-                    aboutTab.style.display = DisplayStyle.None;
-                    detectIssuestab.style.display = DisplayStyle.None;
-                    acknowledgementsTab.style.display = DisplayStyle.None;
-                    break;
-                case "AboutButton":
-                    supportTab.style.display = DisplayStyle.None;
-                    aboutTab.style.display = DisplayStyle.Flex;
-                    detectIssuestab.style.display = DisplayStyle.None;
-                    acknowledgementsTab.style.display = DisplayStyle.None;
-                    break;
-                case "ConfigureButton":
-                    supportTab.style.display = DisplayStyle.None;
-                    aboutTab.style.display = DisplayStyle.None;
-                    detectIssuestab.style.display = DisplayStyle.Flex;
-                    acknowledgementsTab.style.display = DisplayStyle.None;
-                    break;
-                case "AcknowledgementsButton":
-                    supportTab.style.display = DisplayStyle.None;
-                    aboutTab.style.display = DisplayStyle.None;
-                    detectIssuestab.style.display = DisplayStyle.None;
-                    acknowledgementsTab.style.display = DisplayStyle.Flex;
-                    break;
-                case "Check":
-                    SetUnchecked();
-                    CheckUnityVersion();
-                    break;
-                case "Manual":
-                    Application.OpenURL("https://alexander-ameye.gitbook.io/stylized-water/support/troubleshooting");
-                    break;
-                case "Forum":
-                    Application.OpenURL("https://forum.unity.com/threads/stylized-water-for-urp-desktop-mobile-released.846313/");
-                    break;
-                case "Caustics":
-                    Application.OpenURL("https://assetstore.unity.com/packages/vfx/shaders/water-caustics-for-urp-221106");
-                    break;
-                case "Contact":
-                    Application.OpenURL("https://discord.gg/6QQ5JCc");
-                    break;
-                case "Review":
-                    Application.OpenURL("https://assetstore.unity.com/packages/vfx/shaders/stylized-water-for-urp-162025");
-                    break;
-                case "Twitter":
-                    Application.OpenURL("https://twitter.com/alexanderameye");
-                    break;
-                case "Website":
-                    Application.OpenURL("https://alexanderameye.github.io/");
-                    break;
-                case "Unity Version Fix":
-                    Application.OpenURL("https://unity3d.com/get-unity/download");
-                    break;
-                case "Active Renderer Fix":
-                    SettingsService.OpenProjectSettings("Project/Graphics");
-                    break;
-                case "Shader_Variant_Limit_Fix":
-                    EditorPrefs.SetInt("UnityEditor.ShaderGraph.VariantLimit", 256);
-                    Debug.Log("Shader Variant Limit set to 256.");
-                    var readMethod = typeof(Editor).Assembly.GetType("UnityEditor.CacheServerPreferences")
-                        .GetMethod("ReadPreferences", BindingFlags.Static | BindingFlags.Public);
-                    readMethod.Invoke(null, null);
+                supportTab.style.display = DisplayStyle.Flex;
+                aboutTab.style.display = DisplayStyle.None;
+                errorsTab.style.display = DisplayStyle.None;
+                acknowledgementsTab.style.display = DisplayStyle.None;
+            }
 
-                    DetectIssues();
-                    SettingsService.OpenUserPreferences("Preferences/Shader Graph");
-                    break;
-                case "Planar_Reflections_Fix":
-                    if (Camera.main != null)
-                    {
-                        Selection.activeGameObject = Camera.main.gameObject;
-                        EditorGUIUtility.PingObject(Camera.main);
-                    }
-                    break;
-                case "Depth Texture Fix":
+            else if (button.name == "AboutButton")
+            {
+                supportTab.style.display = DisplayStyle.None;
+                aboutTab.style.display = DisplayStyle.Flex;
+                errorsTab.style.display = DisplayStyle.None;
+                acknowledgementsTab.style.display = DisplayStyle.None;
+            }
+
+            else if (button.name == "ConfigureButton")
+            {
+                supportTab.style.display = DisplayStyle.None;
+                aboutTab.style.display = DisplayStyle.None;
+                errorsTab.style.display = DisplayStyle.Flex;
+                acknowledgementsTab.style.display = DisplayStyle.None;
+            }
+
+            else if (button.name == "AcknowledgementsButton")
+            {
+                supportTab.style.display = DisplayStyle.None;
+                aboutTab.style.display = DisplayStyle.None;
+                errorsTab.style.display = DisplayStyle.None;
+                acknowledgementsTab.style.display = DisplayStyle.Flex;
+            }
+
+            else if (button.name == "Check")
+            {
+                SetUnchecked();
+                CheckUnityVersion();
+            }
+
+            else if (button.name == "Manual")
+            {
+                Application.OpenURL("https://alexander-ameye.gitbook.io/stylized-water/support/troubleshooting");
+            }
+
+            else if (button.name == "Forum")
+            {
+                Application.OpenURL("https://forum.unity.com/threads/stylized-water-for-urp-desktop-mobile-released.846313/");
+            }
+
+            else if (button.name == "Contact")
+            {
+                Application.OpenURL("https://discord.gg/6QQ5JCc");
+            }
+
+            else if (button.name == "Review")
+            {
+                Application.OpenURL("https://assetstore.unity.com/packages/vfx/shaders/stylized-water-for-urp-162025");
+            }
+
+            else if (button.name == "Twitter")
+            {
+                Application.OpenURL("https://twitter.com/alexanderameye");
+            }
+
+            else if (button.name == "Website")
+            {
+                Application.OpenURL("https://alexanderameye.github.io/");
+            }
+
+            else if (button.name == "Unity Version Fix")
+            {
+                Application.OpenURL("https://unity3d.com/get-unity/download");
+            }
+
+            else if (button.name == "Active Renderer Fix")
+            {
+                SettingsService.OpenProjectSettings("Project/Graphics");
+            }
+
+            else if (button.name == "Shader_Variant_Limit_Fix")
+            {
+                EditorPrefs.SetInt("UnityEditor.ShaderGraph.VariantLimit", (int)(object)256);
+                FindErrors();
+            }
+
+            else if (button.name == "Planar_Reflections_Fix")
+            {
+                if (Camera.main != null)
                 {
-                    RenderPipelineAsset activeRenderPipelineAsset = GraphicsSettings.currentRenderPipeline;
-                    UniversalRenderPipelineAsset pipeline = activeRenderPipelineAsset as UniversalRenderPipelineAsset;
-                    EditorGUIUtility.PingObject(pipeline);
-                    break;
+                    Selection.activeGameObject = Camera.main.gameObject;
+                    EditorGUIUtility.PingObject(Camera.main);
                 }
-                case "Opaque Texture Fix":
-                {
-                    RenderPipelineAsset activeRenderPipelineAsset = GraphicsSettings.currentRenderPipeline;
-                    UniversalRenderPipelineAsset pipeline = activeRenderPipelineAsset as UniversalRenderPipelineAsset;
-                    EditorGUIUtility.PingObject(pipeline);
-                    break;
-                }
-                case "KeenanWoodall":
-                    Application.OpenURL("https://twitter.com/keenanwoodall");
-                    break;
-                case "JoshSauter":
-                    Application.OpenURL("https://github.com/JoshSauter");
-                    break;
+            }
+
+            else if (button.name == "Depth Texture Fix")
+            {
+                RenderPipelineAsset activeRenderer = GraphicsSettings.currentRenderPipeline;
+                UnityEngine.Rendering.Universal.UniversalRenderPipelineAsset pipeline = activeRenderer as UnityEngine.Rendering.Universal.UniversalRenderPipelineAsset;
+                EditorGUIUtility.PingObject(pipeline);
+            }
+
+            else if (button.name == "Opaque Texture Fix")
+            {
+                RenderPipelineAsset activeRenderer = GraphicsSettings.currentRenderPipeline;
+                UnityEngine.Rendering.Universal.UniversalRenderPipelineAsset pipeline = activeRenderer as UnityEngine.Rendering.Universal.UniversalRenderPipelineAsset;
+                EditorGUIUtility.PingObject(pipeline);
+            }
+
+            else if (button.name == "KeenanWoodall")
+            {
+                Application.OpenURL("https://twitter.com/keenanwoodall");
+            }
+
+            else if (button.name == "JoshSauter")
+            {
+                Application.OpenURL("https://github.com/JoshSauter");
             }
         }
 
@@ -329,7 +345,6 @@ namespace StylizedWater
             opaqueTextureLabel.text = "Untested";
             graphicsAPILabel.text = "Untested";
             planarReflectionsLabel.text = "Untested";
-            shaderVariantLimitLabel.text = "Untested";
 
             unityVersionIcon.style.backgroundImage = Background.FromTexture2D(neutral);
             activeRendererIcon.style.backgroundImage = Background.FromTexture2D(neutral);
@@ -338,45 +353,37 @@ namespace StylizedWater
             opaqueTextureIcon.style.backgroundImage = Background.FromTexture2D(neutral);
             graphicsAPIIcon.style.backgroundImage = Background.FromTexture2D(neutral);
             planarReflectionsIcon.style.backgroundImage = Background.FromTexture2D(neutral);
-            shaderVariantLimitIcon.style.backgroundImage = Background.FromTexture2D(neutral);
 
-            URPVersionFix.SetEnabled(false);
-            unityVersionFix.SetEnabled(false);
-            activeRendererFix.SetEnabled(false);
-            depthTextureFix.SetEnabled(false);
-            opaqueTextureFix.SetEnabled(false);
-            graphicsAPIFix.SetEnabled(false);
-            planarReflectionsFix.SetEnabled(false);
-            shaderVariantLimitFix.SetEnabled(false);
+            unityVersionFix.style.visibility = Visibility.Hidden;
+            URPVersionFix.style.visibility = Visibility.Hidden;
+            activeRendererFix.style.visibility = Visibility.Hidden;
+            depthTextureFix.style.visibility = Visibility.Hidden;
+            opaqueTextureFix.style.visibility = Visibility.Hidden;
+            graphicsAPIFix.style.visibility = Visibility.Hidden;
+            planarReflectionsFix.style.visibility = Visibility.Hidden;
         }
 
         private void CheckUnityVersion()
         {
-            var currentUnityVersion = Application.unityVersion;
-            var currentUnityVersionArray = currentUnityVersion.Split(".".ToCharArray());
-            var currentUnityVersionTruncated = string.Join(".", currentUnityVersionArray.Take(2));
-            unityVersionLabel.text = currentUnityVersion;
+            string unityVersion = Application.unityVersion;
+            unityVersionLabel.text = unityVersion;
 
-            var tested = new Version("2021.3.0");
-            var current = new Version(currentUnityVersionTruncated);
-            var unityVersionComparison = tested.CompareTo(current);
-
-            switch (unityVersionComparison)
+            if (unityVersion.StartsWith("2019.3") || unityVersion.StartsWith("2019.4") || unityVersion.StartsWith("2020.1"))
             {
-                // supported versions
-                case var value when value >= 0:
-                    unityVersionIcon.style.backgroundImage = Background.FromTexture2D(positive);
-                    unityVersionIcon.tooltip = SupportedText;
-                    break;
-                // untested versions
-                case var value when value < 0:
-                    unityVersionIcon.style.backgroundImage = Background.FromTexture2D(neutral);
-                    unityVersionFix.SetEnabled(false);
-                    unityVersionIcon.tooltip = NotTestedText;
-                    break;
+                unityVersionIcon.style.backgroundImage = Background.FromTexture2D(positive);
+                CheckSRPVersion();
             }
-            
-            CheckSRPVersion();
+
+            else if (unityVersion.StartsWith("2020.2") || unityVersion.StartsWith("2020.3") || unityVersion.StartsWith("2020.4") || unityVersion.StartsWith("2021.1") || unityVersion.StartsWith("2021.2"))
+            {
+                unityVersionIcon.style.backgroundImage = Background.FromTexture2D(neutral);
+            }
+
+            else
+            {
+                unityVersionIcon.style.backgroundImage = Background.FromTexture2D(negative);
+                unityVersionFix.style.visibility = Visibility.Visible;
+            }
         }
 
         private void CheckSRPVersion()
@@ -388,23 +395,8 @@ namespace StylizedWater
             EditorApplication.update += FindSRPVersion;
         }
 
-        static void DetectIssues()
+        static void FindErrors()
         {
-            // check shader variant limit
-            var limit = EditorPrefs.GetInt("UnityEditor.ShaderGraph.VariantLimit");
-            shaderVariantLimitLabel.text = limit.ToString();
-
-            if (limit < 256)
-            {
-                shaderVariantLimitIcon.style.backgroundImage = Background.FromTexture2D(negative);
-                shaderVariantLimitFix.style.visibility = Visibility.Visible;
-            }
-            else
-            {
-                shaderVariantLimitIcon.style.backgroundImage = Background.FromTexture2D(positive);
-                shaderVariantLimitFix.style.visibility = Visibility.Hidden;
-            }
-
             activeRendererIcon.style.backgroundImage = Background.FromTexture2D(neutral);
             depthTextureIcon.style.backgroundImage = Background.FromTexture2D(neutral);
             opaqueTextureIcon.style.backgroundImage = Background.FromTexture2D(neutral);
@@ -437,136 +429,112 @@ namespace StylizedWater
                 case GraphicsDeviceType.Vulkan:
                     graphicsAPILabel.text = "Vulkan";
                     graphicsAPIIcon.style.backgroundImage = Background.FromTexture2D(positive);
-                    graphicsAPIIcon.tooltip = SupportedText;
                     break;
                 case GraphicsDeviceType.Direct3D11:
                     graphicsAPILabel.text = "Direct3D11";
                     graphicsAPIIcon.style.backgroundImage = Background.FromTexture2D(positive);
-                    graphicsAPIIcon.tooltip = SupportedText;
                     break;
                 case GraphicsDeviceType.OpenGLES3:
                     graphicsAPILabel.text = "OpenGLES3";
                     graphicsAPIIcon.style.backgroundImage = Background.FromTexture2D(neutral);
-                    graphicsAPIIcon.tooltip = NotTestedText;
                     break;
                 case GraphicsDeviceType.Direct3D12:
                     graphicsAPILabel.text = "Direct3D12";
                     graphicsAPIIcon.style.backgroundImage = Background.FromTexture2D(neutral);
-                    graphicsAPIIcon.tooltip = NotTestedText;
                     break;
                 case GraphicsDeviceType.OpenGLES2:
                     graphicsAPILabel.text = "OpenGLES2";
                     graphicsAPIIcon.style.backgroundImage = Background.FromTexture2D(negative);
-                    graphicsAPIIcon.tooltip = NotSupportedText;
                     break;
                 case GraphicsDeviceType.Null:
                     graphicsAPILabel.text = "Null";
                     graphicsAPIIcon.style.backgroundImage = Background.FromTexture2D(neutral);
-                    graphicsAPIIcon.tooltip = NotTestedText;
                     break;
                 case GraphicsDeviceType.PlayStation4:
                     graphicsAPILabel.text = "PlayStation4";
                     graphicsAPIIcon.style.backgroundImage = Background.FromTexture2D(neutral);
-                    graphicsAPIIcon.tooltip = NotTestedText;
                     break;
                 case GraphicsDeviceType.XboxOne:
                     graphicsAPILabel.text = "XboxOne";
                     graphicsAPIIcon.style.backgroundImage = Background.FromTexture2D(neutral);
-                    graphicsAPIIcon.tooltip = NotTestedText;
                     break;
                 case GraphicsDeviceType.Metal:
                     graphicsAPILabel.text = "Metal";
-                    graphicsAPIIcon.style.backgroundImage = Background.FromTexture2D(positive);
-                    graphicsAPIIcon.tooltip = SupportedText;
+                    graphicsAPIIcon.style.backgroundImage = Background.FromTexture2D(neutral);
                     break;
                 case GraphicsDeviceType.OpenGLCore:
                     graphicsAPILabel.text = "OpenGLCore";
                     graphicsAPIIcon.style.backgroundImage = Background.FromTexture2D(neutral);
-                    graphicsAPIIcon.tooltip = NotTestedText;
                     break;
                 case GraphicsDeviceType.XboxOneD3D12:
                     graphicsAPILabel.text = "XboxOneD3D12";
                     graphicsAPIIcon.style.backgroundImage = Background.FromTexture2D(neutral);
-                    graphicsAPIIcon.tooltip = NotTestedText;
                     break;
                 case GraphicsDeviceType.Switch:
                     graphicsAPILabel.text = "Switch";
                     graphicsAPIIcon.style.backgroundImage = Background.FromTexture2D(neutral);
-                    graphicsAPIIcon.tooltip = NotTestedText;
                     break;
             }
 
-            switch (DetectRenderPipeline())
+            switch (DetectPipeline())
             {
                 case PipelineType.Custom:
                     activeRendererLabel.text = "Custom";
-                    depthTextureLabel.text = NotTestedText;
-                    opaqueTextureLabel.text = NotTestedText;
-                    
-                    activeRendererIcon.tooltip = NotSupportedText;
-                    depthTextureIcon.tooltip = NotTestedText;
-                    opaqueTextureIcon.tooltip = NotTestedText;
+                    depthTextureLabel.text = "Not tested";
+                    opaqueTextureLabel.text = "Not tested";
 
                     activeRendererIcon.style.backgroundImage = Background.FromTexture2D(negative);
                     depthTextureIcon.style.backgroundImage = Background.FromTexture2D(neutral);
                     opaqueTextureIcon.style.backgroundImage = Background.FromTexture2D(neutral);
 
-                    depthTextureFix.SetEnabled(false);
-                    activeRendererFix.SetEnabled(false);
-                    opaqueTextureFix.SetEnabled(false);
+                    depthTextureFix.style.visibility = Visibility.Hidden;
+                    activeRendererFix.style.visibility = Visibility.Hidden;
+                    opaqueTextureFix.style.visibility = Visibility.Hidden;
                     break;
                 case PipelineType.Default:
                     activeRendererLabel.text = "Default";
-                    depthTextureLabel.text = NotTestedText;
-                    opaqueTextureLabel.text = NotTestedText;
-                    
-                    activeRendererIcon.tooltip = NotSupportedText;
-                    depthTextureIcon.tooltip = NotTestedText;
-                    opaqueTextureIcon.tooltip = NotTestedText;
+                    depthTextureLabel.text = "Not tested";
+                    opaqueTextureLabel.text = "Not tested";
 
                     activeRendererIcon.style.backgroundImage = Background.FromTexture2D(negative);
                     depthTextureIcon.style.backgroundImage = Background.FromTexture2D(neutral);
                     opaqueTextureIcon.style.backgroundImage = Background.FromTexture2D(neutral);
 
-                    depthTextureFix.SetEnabled(false);
-                    activeRendererFix.SetEnabled(false);
-                    opaqueTextureFix.SetEnabled(false);
+                    depthTextureFix.style.visibility = Visibility.Hidden;
+                    activeRendererFix.style.visibility = Visibility.Hidden;
+                    opaqueTextureFix.style.visibility = Visibility.Hidden;
                     break;
                 case PipelineType.Lightweight:
                     activeRendererLabel.text = "Lightweight";
-                    depthTextureLabel.text = NotTestedText;
-                    opaqueTextureLabel.text = NotTestedText;
-                    
-                    activeRendererIcon.tooltip = NotSupportedText;
-                    depthTextureIcon.tooltip = NotTestedText;
-                    opaqueTextureIcon.tooltip = NotTestedText;
+                    depthTextureLabel.text = "Not tested";
+                    opaqueTextureLabel.text = "Not tested";
 
                     activeRendererIcon.style.backgroundImage = Background.FromTexture2D(negative);
                     depthTextureIcon.style.backgroundImage = Background.FromTexture2D(neutral);
                     opaqueTextureIcon.style.backgroundImage = Background.FromTexture2D(neutral);
 
-                    depthTextureFix.SetEnabled(false);
-                    activeRendererFix.SetEnabled(false);
-                    opaqueTextureFix.SetEnabled(false);
+                    depthTextureFix.style.visibility = Visibility.Hidden;
+                    activeRendererFix.style.visibility = Visibility.Hidden;
+                    opaqueTextureFix.style.visibility = Visibility.Hidden;
                     break;
                 case PipelineType.Universal:
 #if UNIVERSAL_RENDERER
+
                     UnityEngine.Rendering.Universal.UniversalRenderPipelineAsset pipeline = GraphicsSettings.currentRenderPipeline as UnityEngine.Rendering.Universal.UniversalRenderPipelineAsset;
+
 #if UNIVERSAL_731 // GetRenderer() was introduced in 7.3.1
                     if (pipeline.GetRenderer(0).GetType().ToString().Contains("Renderer2D"))
                     {
                         activeRendererLabel.text = "2D Renderer";
                         activeRendererIcon.style.backgroundImage = Background.FromTexture2D(negative);
-                        activeRendererFix.SetEnabled(false);
-                        activeRendererIcon.tooltip = NotSupportedText;
+                        activeRendererFix.style.visibility = Visibility.Visible;
                     }
 
                     else
                     {
                         activeRendererLabel.text = "Universal";
                         activeRendererIcon.style.backgroundImage = Background.FromTexture2D(positive);
-                        activeRendererFix.SetEnabled(false);
-                        activeRendererIcon.tooltip = SupportedText;
+                        activeRendererFix.style.visibility = Visibility.Hidden;
                     }
 #else
                     activeRendererLabel.text = "Universal";
@@ -578,51 +546,43 @@ namespace StylizedWater
                     {
                         depthTextureLabel.text = "Enabled";
                         depthTextureIcon.style.backgroundImage = Background.FromTexture2D(positive);
-                        depthTextureFix.SetEnabled(false);
-                        depthTextureIcon.tooltip = "Depth texture enabled";
+                        depthTextureFix.style.visibility = Visibility.Hidden;
                     }
 
                     else
                     {
                         depthTextureLabel.text = "Disabled";
                         depthTextureIcon.style.backgroundImage = Background.FromTexture2D(negative);
-                        depthTextureFix.SetEnabled(true);
-                        depthTextureIcon.tooltip = "Depth texture disabled";
+                        depthTextureFix.style.visibility = Visibility.Visible;
                     }
 
                     if (pipeline.supportsCameraOpaqueTexture)
                     {
                         opaqueTextureLabel.text = "Enabled";
                         opaqueTextureIcon.style.backgroundImage = Background.FromTexture2D(positive);
-                        opaqueTextureFix.SetEnabled(false);
-                        opaqueTextureIcon.tooltip = "Opaque texture enabled";
+                        opaqueTextureFix.style.visibility = Visibility.Hidden;
                     }
 
                     else
                     {
                         opaqueTextureLabel.text = "Disabled";
                         opaqueTextureIcon.style.backgroundImage = Background.FromTexture2D(negative);
-                        opaqueTextureFix.SetEnabled(true);
-                        opaqueTextureIcon.tooltip = "Opaque texture disabled";
+                        opaqueTextureFix.style.visibility = Visibility.Visible;
                     }
 #endif
                     break;
                 case PipelineType.HighDefinition:
                     activeRendererLabel.text = "High Definition";
-                    depthTextureLabel.text = NotTestedText;
-                    opaqueTextureLabel.text = NotTestedText;
-                    
-                    activeRendererIcon.tooltip = NotSupportedText;
-                    depthTextureIcon.tooltip = NotTestedText;
-                    opaqueTextureIcon.tooltip = NotTestedText;
+                    depthTextureLabel.text = "Not tested";
+                    opaqueTextureLabel.text = "Not tested";
 
                     activeRendererIcon.style.backgroundImage = Background.FromTexture2D(negative);
                     depthTextureIcon.style.backgroundImage = Background.FromTexture2D(neutral);
                     opaqueTextureIcon.style.backgroundImage = Background.FromTexture2D(neutral);
 
-                    activeRendererFix.SetEnabled(false);
-                    depthTextureFix.SetEnabled(false);
-                    opaqueTextureFix.SetEnabled(false);
+                    activeRendererFix.style.visibility = Visibility.Hidden;
+                    depthTextureFix.style.visibility = Visibility.Hidden;
+                    opaqueTextureFix.style.visibility = Visibility.Hidden;
                     break;
             }
         }
@@ -638,28 +598,21 @@ namespace StylizedWater
                     {
                         if (package.name == "com.unity.render-pipelines.universal")
                         {
-                            var currentUrpVersion = package.version;
-                            var currentUrpVersionArray = currentUrpVersion.Split(".".ToCharArray());
-                            var currentUrpVersionTruncated = string.Join(".", currentUrpVersionArray.Take(3));
-                            URPVersionLabel.text = currentUrpVersion;
+                            var version = package.version;
+                            URPVersionLabel.text = version;
 
-                            var tested = new Version("12.1.7");
-                            var current = new Version(currentUrpVersionTruncated);
-                            var urpVersionComparison = tested.CompareTo(current);
-
-                            switch (urpVersionComparison)
+                            if (version.StartsWith("7.3") || version.StartsWith("7.4") ||
+                                version.StartsWith("7.5") || version.StartsWith("7.6") || version.StartsWith("8") || version.StartsWith("9") ||
+                                version.StartsWith("10") || version.StartsWith("11") || version.StartsWith("12"))
                             {
-                                // supported versions
-                                case var value when value >= 0:
-                                    URPVersionIcon.style.backgroundImage = Background.FromTexture2D(positive);
-                                    URPVersionIcon.tooltip = SupportedText;
-                                    DetectIssues();
-                                    break;
-                                // untested versions
-                                case var value when value < 0:
-                                    URPVersionIcon.style.backgroundImage = Background.FromTexture2D(neutral);
-                                    URPVersionIcon.tooltip = NotTestedText;
-                                    break;
+                                URPVersionIcon.style.backgroundImage = Background.FromTexture2D(positive);
+                                FindErrors();
+                                break;
+                            }
+                            else
+                            {
+                                URPVersionIcon.style.backgroundImage = Background.FromTexture2D(negative);
+                                break;
                             }
                         }
                     }
