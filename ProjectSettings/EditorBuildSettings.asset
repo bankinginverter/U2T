@@ -6,9 +6,15 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
+    path: Assets/U2T/Scenes/Lobby.unity
+    guid: abc1ebdbc8afc134b8026dff9e2cd93a
+  - enabled: 1
+    path: Assets/U2T/Scenes/WorkShop/PhotonGamePlay1.unity
+    guid: 43013876263ce55498ffff7d0df44ece
+  - enabled: 0
     path: Assets/U2T/Scenes/WorkShop/Photon.unity
     guid: 85012fa0a4beee54d9773e88f6403289
-  - enabled: 1
+  - enabled: 0
     path: Assets/U2T/Scenes/WorkShop/PhotonGamePlay.unity
     guid: 44277721eac9ae94a8e4aebb2de158eb
   m_configObjects: {}
