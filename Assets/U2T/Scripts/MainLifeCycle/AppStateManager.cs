@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using Photon.Pun;
@@ -12,8 +13,8 @@ namespace U2T.Foundation
         //BackendManager db;
         public static AppStateManager Instance;
         Save save;
-        //BsonDocument dbCompare;
-
+        string _dbCompareUsername;
+        string _dbComparePassword;
         public delegate void AppStateDelegate();
         public AppStateDelegate OnStateChange = null;
 
@@ -45,7 +46,7 @@ namespace U2T.Foundation
             OnStateChange?.Invoke();
         }
 
-        public void ChangeAppState(Enumulator.GameState gameState)
+        public async void ChangeAppState(Enumulator.GameState gameState)
         {
             switch (gameState)
             {
@@ -56,20 +57,23 @@ namespace U2T.Foundation
                 case Enumulator.GameState.PHOTON_CONNECTED:
                     Debug.Log("AppState : GameState.PHOTON_CONNECTED");
                     ChangeAppState(Enumulator.GameState.FETCHING_DATA);
+                    //ChangeAppState(Enumulator.GameState.SELECT_CHARACTER);
                     break;
                 case Enumulator.GameState.FETCHING_DATA:
                     Debug.Log("AppState : GameState.FETCHINGDATA");
                     //db.Initialize();
-                    //dbCompare = db.FilterData("username", save.GetUserName());
-                    //if (db.FilterData("username", save.GetUserName()) == null)
+                    //_dbCompareUsername = await GameObject.Find("BackendManager").GetComponent<BackendManager>().ReadDataUsername(save.GetUserName());
+                    //_dbComparePassword = await GameObject.Find("BackendManager").GetComponent<BackendManager>().ReadDataPassword(save.GetPassword());
+                    //Debug.Log("=>>2" + save.GetUserName());
+                    //if (_dbCompareUsername == null)
                     //{
                     //    Debug.Log("1");
-                    //    ChangeAppState(GameState.LOGING_IN);
+                    //    ChangeAppState(Enumulator.GameState.LOGING_IN);
                     //}
-                    //if ((save.GetUserName() == dbCompare.GetValue("username")) && (save.GetPassword() == dbCompare.GetValue("password")))
+                    //if ((save.GetUserName() + "@gmail.com" == _dbCompareUsername))
                     //{
                     //    Debug.Log("2");
-                    //    ChangeAppState(GameState.SELECT_CHARACTER);
+                    //    ChangeAppState(Enumulator.GameState.SELECT_CHARACTER);
                     //}
                     ChangeAppState(Enumulator.GameState.SELECT_CHARACTER);
                     break;
@@ -85,11 +89,12 @@ namespace U2T.Foundation
                     {
                         UIManagers.Instance.EnbleUIPopUp("AuthenPopup");
                         GameObject.Find("RegisterPopup").GetComponent<SendEmail>().SendingGmail(username);
+                        string[] splitWord = username.Split('@');
                         GameObject.Find("AuthenPopup").GetComponent<Authentication>().OnVerified += () =>
                         {
-                            //db.AddData(username, password);
-                            save.SaveUserName(username);
-                            //save.SavePassword(db.EncodePasswordToHAS256(password));
+                            save.SavePassword(GameObject.Find("BackendManager").GetComponent<BackendManager>().EncodePasswordToHAS256(password));
+                            GameObject.Find("BackendManager").GetComponent<BackendManager>().saveDataToDatabase(username, save.GetPassword());
+                            save.SaveUserName(splitWord[0]);
                             UIManagers.Instance.DisableUIPopUp("AuthenPopup");
                             UIManagers.Instance.DisableUIPopUp("RegisterPopup");
                             ChangeAppState(Enumulator.GameState.LOGING_IN);
@@ -112,17 +117,26 @@ namespace U2T.Foundation
                         ChangeAppState(Enumulator.GameState.REGISTER);
                     };
 
-                    GameObject.Find("LoginPopup").GetComponent<Login>().OnLoggedin += (username,password) =>
+                    GameObject.Find("LoginPopup").GetComponent<Login>().OnLoggedin += async (username, password) =>
                     {
-                        //if (username == dbCompare.GetValue("username") && db.EncodePasswordToHAS256(password) == dbCompare.GetValue("password"))
-                        //{
-                        //    UIManagers.instance.DisableUIPopUp("LoginPopup");
-                        //    ChangeAppState(GameState.LOGGED_IN);
-                        //}
+                        string[] splitWord = username.Split('@');
+                        string u = await GameObject.Find("BackendManager").GetComponent<BackendManager>().ReadDataUsername(splitWord[0]);
+                        Debug.Log("Wait==>U:" + u);
+                        string _encodePassword = GameObject.Find("BackendManager").GetComponent<BackendManager>().EncodePasswordToHAS256(password);
+                        string p = await GameObject.Find("BackendManager").GetComponent<BackendManager>().ReadDataPassword(splitWord[0]);
+                        Debug.Log("Wait==>P:" + p);
+                        if (username == u && _encodePassword == p)
+                        {
+                            save.SaveUserName(splitWord[0]);
+                            save.SavePassword(p);
+                            UIManagers.Instance.DisableUIPopUp("LoginPopup");
+                            ChangeAppState(Enumulator.GameState.LOGGED_IN);
+                        }
                     };
                     break;
                 case Enumulator.GameState.LOGGED_IN:
                     Debug.Log("AppState : GameState.LOGGED_IN");
+                    ChangeAppState(Enumulator.GameState.SELECT_CHARACTER);
                     break;
                 case Enumulator.GameState.LOG_OUT:
                     save.SaveUserName("");
@@ -145,64 +159,102 @@ namespace U2T.Foundation
                     Debug.Log("AppState : GameState.GAME_START");
                     PlayerManager _playerManager = new PlayerManager();
                     _playerManager.AddPlayerToList(GameObject.Find("PlayerLocal").gameObject);
-
+                    GameObject temp = null;
                     //UIManagers.Instance.EnbleUIPopUp("GeneralMenuPopup");
                     GameObject.Find("GeneralMenuPopup").GetComponent<GeneralMenuPopup>().OnPassported += () =>
                     {
+                        temp = Instantiate(Resources.Load<GameObject>("C1Present"), new Vector3(-1.54f, 1.900001f, 118.9f), Quaternion.EulerRotation(0f, -180f, 0f)) as GameObject;
                         UIManagers.Instance.EnbleUIPopUp("PassportHistoryPopup");
                         if (save.GetCheckIn1() == "pass")
                         {
-                            GameObject.Find("PassportHistoryPopup").GetComponent<PassportHistoryPopup>().ShowSign("Reward1");
                             GameObject.Find("PassportHistoryPopup").GetComponent<PassportHistoryPopup>().DisableSign("Disable1");
+                            GameObject.Find("PassportHistoryPopup").GetComponent<PassportHistoryPopup>().ShowSign("Reward1");
+                            GameObject.Find("PassportHistoryPopup").GetComponent<PassportHistoryPopup>().ShowButton("KA-TOM-SA-TU");
                         }
                         if (save.GetCheckIn2() == "pass")
                         {
-                            GameObject.Find("PassportHistoryPopup").GetComponent<PassportHistoryPopup>().ShowSign("Reward2");
                             GameObject.Find("PassportHistoryPopup").GetComponent<PassportHistoryPopup>().DisableSign("Disable2");
+                            GameObject.Find("PassportHistoryPopup").GetComponent<PassportHistoryPopup>().ShowSign("Reward2");
+                            GameObject.Find("PassportHistoryPopup").GetComponent<PassportHistoryPopup>().ShowButton("DO NOM COFFEE");
                         }
                         if (save.GetCheckIn3() == "pass")
                         {
-                            GameObject.Find("PassportHistoryPopup").GetComponent<PassportHistoryPopup>().ShowSign("Reward3");
                             GameObject.Find("PassportHistoryPopup").GetComponent<PassportHistoryPopup>().DisableSign("Disable3");
+                            GameObject.Find("PassportHistoryPopup").GetComponent<PassportHistoryPopup>().ShowSign("Reward3");
+                            GameObject.Find("PassportHistoryPopup").GetComponent<PassportHistoryPopup>().ShowButton("PHOTHARAM GALLERY");
                         }
                         if (save.GetCheckIn4() == "pass")
                         {
-                            GameObject.Find("PassportHistoryPopup").GetComponent<PassportHistoryPopup>().ShowSign("Reward4");
                             GameObject.Find("PassportHistoryPopup").GetComponent<PassportHistoryPopup>().DisableSign("Disable4");
+                            GameObject.Find("PassportHistoryPopup").GetComponent<PassportHistoryPopup>().ShowSign("Reward4");
+                            GameObject.Find("PassportHistoryPopup").GetComponent<PassportHistoryPopup>().ShowButton("MAE KLONG RIVER");
                         }
                         if (save.GetCheckIn1() == "reward")
                         {
-                            GameObject.Find("PassportHistoryPopup").GetComponent<PassportHistoryPopup>().ShowSign("Normal1");
+                            GameObject.Find("PassportHistoryPopup").GetComponent<PassportHistoryPopup>().DisableSign("Disable1");
                             GameObject.Find("PassportHistoryPopup").GetComponent<PassportHistoryPopup>().DisableSign("Reward1");
+                            GameObject.Find("PassportHistoryPopup").GetComponent<PassportHistoryPopup>().ShowSign("Normal1");
                         }
                         if (save.GetCheckIn2() == "reward")
                         {
-                            GameObject.Find("PassportHistoryPopup").GetComponent<PassportHistoryPopup>().ShowSign("Normal2");
+                            GameObject.Find("PassportHistoryPopup").GetComponent<PassportHistoryPopup>().DisableSign("Disable2");
                             GameObject.Find("PassportHistoryPopup").GetComponent<PassportHistoryPopup>().DisableSign("Reward2");
+                            GameObject.Find("PassportHistoryPopup").GetComponent<PassportHistoryPopup>().ShowSign("Normal2");
                         }
                         if (save.GetCheckIn3() == "reward")
                         {
-                            GameObject.Find("PassportHistoryPopup").GetComponent<PassportHistoryPopup>().ShowSign("Normal3");
+                            GameObject.Find("PassportHistoryPopup").GetComponent<PassportHistoryPopup>().DisableSign("Disable3");
                             GameObject.Find("PassportHistoryPopup").GetComponent<PassportHistoryPopup>().DisableSign("Reward3");
+                            GameObject.Find("PassportHistoryPopup").GetComponent<PassportHistoryPopup>().ShowSign("Normal3");
                         }
                         if (save.GetCheckIn4() == "reward")
                         {
-                            GameObject.Find("PassportHistoryPopup").GetComponent<PassportHistoryPopup>().ShowSign("Normal4");
+                            GameObject.Find("PassportHistoryPopup").GetComponent<PassportHistoryPopup>().DisableSign("Disable4");
                             GameObject.Find("PassportHistoryPopup").GetComponent<PassportHistoryPopup>().DisableSign("Reward4");
+                            GameObject.Find("PassportHistoryPopup").GetComponent<PassportHistoryPopup>().ShowSign("Normal4");
                         }
                         if (CheckInManager.Instance.GetCounting() == 4)
                         {
-                            GameObject.Find("PassportHistoryPopup").GetComponent<PassportHistoryPopup>().ShowSign("QR");
                             save.SaveCheckInSuccess("Complete");
                         }
-                        if (save.GetCheckInSuccess() == "Complete")
+
+                        GameObject.Find("PassportHistoryPopup").GetComponent<PassportHistoryPopup>().OnButtonLocation += (name) =>
                         {
-                            GameObject.Find("PassportHistoryPopup").GetComponent<PassportHistoryPopup>().ShowSign("QR");
-                        }
+                            if (name == "KA-TOM-SA-TU")
+                            {
+                                save.SaveCheckIn1("reward");
+                            }
+                            if (name == "DO NOM COFFEE")
+                            {
+                                save.SaveCheckIn2("reward");
+                            }
+                            if (name == "PHOTHARAM GALLERY")
+                            {
+                                save.SaveCheckIn3("reward");
+                            }
+                            if (name == "MAE KLONG RIVER")
+                            {
+                                save.SaveCheckIn4("reward");
+                            }
+                            GameObject.Find("PassportHistoryPopup").GetComponent<PassportHistoryPopup>().ShowQRCode();
+                        };
+                        GameObject.Find("PassportHistoryPopup").GetComponent<PassportHistoryPopup>().OnButtonSelect += () =>
+                        {
+                            Destroy(temp);
+                            Destroy(GameObject.Find("C1Presnet(Clone)"));
+                        };
+                        GameObject.Find("PassportHistoryPopup").GetComponent<PassportHistoryPopup>().OnConfirm += () =>
+                        {
+                            CharacterManagerInScene.Instance.OnOffCharacter(save.GetCharacterID());
+                        };
                         GameObject.Find("GeneralMenuPopup").GetComponent<GeneralMenuPopup>().SetExitButtonEnable(true);
                     };
+
                     GameObject.Find("GeneralMenuPopup").GetComponent<GeneralMenuPopup>().OnExit += () =>
                     {
+                        //Destroy(temp);
+                        //Destroy(SelectCharacterCotroller._gameObjectCharacter);
+                        //CharacterList.Instance.ClearList();
                         UIManagers.Instance.DisableUIPopUp("PassportHistoryPopup");
                         GameObject.Find("GeneralMenuPopup").GetComponent<GeneralMenuPopup>().SetExitButtonEnable(false);
                     };
@@ -211,6 +263,7 @@ namespace U2T.Foundation
                         Debug.Log(_playerManager.GetPlayerFromList(0));
                         _playerManager.InActivePlayer();
                         _playerManager.InActivePlayerViewer();
+                        GameObject.Find("MainGamePlay").GetComponent<MainGamePlay>().enabled = false;
                         if (tag == "Item")
                         {
                             UIManagers.Instance.EnbleUIPopUp("CheckInPopup");
@@ -219,19 +272,19 @@ namespace U2T.Foundation
                                 GameObject.Find("CheckInPopup").GetComponent<CheckInPopup>().ShowIcon(name);
                                 GameObject.Find("CheckInPopup").GetComponent<CheckInPopup>().SetTextLabel(name);
                                 CheckInManager.Instance.Counting();
-                                if (name == "Katom")
+                                if (name == "Katom" && save.GetCheckIn1() != "reward")
                                 {
                                     save.SaveCheckIn1("pass");
                                 }
-                                if (name == "Donom")
+                                if (name == "Donom" && save.GetCheckIn2() != "reward")
                                 {
                                     save.SaveCheckIn2("pass");
                                 }
-                                if (name == "Gallery")
+                                if (name == "Gallery" && save.GetCheckIn3() != "reward")
                                 {
                                     save.SaveCheckIn3("pass");
                                 }
-                                if (name == "River")
+                                if (name == "River" && save.GetCheckIn4() != "reward")
                                 {
                                     save.SaveCheckIn4("pass");
                                 }
@@ -241,6 +294,8 @@ namespace U2T.Foundation
                                 UIManagers.Instance.DisableUIPopUp("CheckInPopup");
                                 _playerManager.ActivePlayer();
                                 _playerManager.ActivePlayerViewer();
+                                GameObject.Find("MainGamePlay").GetComponent<MainGamePlay>().enabled = true;
+                                Cursor.lockState = CursorLockMode.Locked;
                             };
                         }
                         if (tag == "Gallery")
@@ -253,6 +308,8 @@ namespace U2T.Foundation
                                     UIManagers.Instance.DisableUIPopUp("GalleryDonomPopup");
                                     _playerManager.ActivePlayer();
                                     _playerManager.ActivePlayerViewer();
+                                    GameObject.Find("MainGamePlay").GetComponent<MainGamePlay>().enabled = true;
+                                    Cursor.lockState = CursorLockMode.Locked;
                                 };
                             }
                             if (name == "GalleryPhotharam")
@@ -263,6 +320,8 @@ namespace U2T.Foundation
                                     UIManagers.Instance.DisableUIPopUp("GalleryPhotharamPopup");
                                     _playerManager.ActivePlayer();
                                     _playerManager.ActivePlayerViewer();
+                                    GameObject.Find("MainGamePlay").GetComponent<MainGamePlay>().enabled = true;
+                                    Cursor.lockState = CursorLockMode.Locked;
                                 };
                             }
                             if (name == "GalleryRiver")
@@ -273,6 +332,8 @@ namespace U2T.Foundation
                                     UIManagers.Instance.DisableUIPopUp("GalleryRiverPopup");
                                     _playerManager.ActivePlayer();
                                     _playerManager.ActivePlayerViewer();
+                                    GameObject.Find("MainGamePlay").GetComponent<MainGamePlay>().enabled = true;
+                                    Cursor.lockState = CursorLockMode.Locked;
                                 };
                             }
                         }
@@ -285,12 +346,14 @@ namespace U2T.Foundation
                                 {
                                     GameObject.Find("PlayerLocal").transform.position = GameObject.Find("DonomWarp").transform.position;
                                     _playerManager.ActivePlayerViewer();
+                                    GameObject.Find("MainGamePlay").GetComponent<MainGamePlay>().enabled = true;
                                 };
                                 GameObject.Find("360ViewDonomPopup").GetComponent<ViewDonomPopup>().OnExitPopup += () =>
                                 {
                                     UIManagers.Instance.DisableUIPopUp("360ViewDonomPopup");
                                     _playerManager.ActivePlayer();
                                     GameObject.Find("PlayerLocal").transform.position = GameObject.Find("SpawnPlayer").transform.position;
+                                    Cursor.lockState = CursorLockMode.Locked;
                                 };
                             }
                             if (name == "360ViewPhotharam")
@@ -300,12 +363,14 @@ namespace U2T.Foundation
                                 {
                                     GameObject.Find("PlayerLocal").transform.position = GameObject.Find("PhotharamWarp").transform.position;
                                     _playerManager.ActivePlayerViewer();
+                                    GameObject.Find("MainGamePlay").GetComponent<MainGamePlay>().enabled = true;
                                 };
                                 GameObject.Find("360ViewPhotharamPopup").GetComponent<ViewPhotharamPopup>().OnExitPopup += () =>
                                 {
                                     UIManagers.Instance.DisableUIPopUp("360ViewPhotharamPopup");
                                     _playerManager.ActivePlayer();
                                     GameObject.Find("PlayerLocal").transform.position = GameObject.Find("SpawnPlayer").transform.position;
+                                    Cursor.lockState = CursorLockMode.Locked;
                                 };
                             }
                             if (name == "360ViewRiver")
@@ -315,12 +380,14 @@ namespace U2T.Foundation
                                 {
                                     GameObject.Find("PlayerLocal").transform.position = GameObject.Find("RiverWarp").transform.position;
                                     _playerManager.ActivePlayerViewer();
+                                    GameObject.Find("MainGamePlay").GetComponent<MainGamePlay>().enabled = true;
                                 };
                                 GameObject.Find("360ViewRiverPopup").GetComponent<ViewRiverPopup>().OnExitPopup += () =>
                                 {
                                     UIManagers.Instance.DisableUIPopUp("360ViewRiverPopup");
                                     _playerManager.ActivePlayer();
                                     GameObject.Find("PlayerLocal").transform.position = GameObject.Find("SpawnPlayer").transform.position;
+                                    Cursor.lockState = CursorLockMode.Locked;
                                 };
                             }
                             if (name == "360ViewKatomSatu")
@@ -330,12 +397,14 @@ namespace U2T.Foundation
                                 {
                                     GameObject.Find("PlayerLocal").transform.position = GameObject.Find("KatomSatuWarp").transform.position;
                                     _playerManager.ActivePlayerViewer();
+                                    GameObject.Find("MainGamePlay").GetComponent<MainGamePlay>().enabled = true;
                                 };
                                 GameObject.Find("360ViewKatomSatuPopup").GetComponent<ViewKatomSatuPopup>().OnExitPopup += () =>
                                 {
                                     UIManagers.Instance.DisableUIPopUp("360ViewKatomSatuPopup");
                                     _playerManager.ActivePlayer();
                                     GameObject.Find("PlayerLocal").transform.position = GameObject.Find("SpawnPlayer").transform.position;
+                                    Cursor.lockState = CursorLockMode.Locked;
                                 };
                             }
                             if (name == "360ViewTrain")
@@ -345,12 +414,14 @@ namespace U2T.Foundation
                                 {
                                     GameObject.Find("PlayerLocal").transform.position = GameObject.Find("TrainWarp").transform.position;
                                     _playerManager.ActivePlayerViewer();
+                                    GameObject.Find("MainGamePlay").GetComponent<MainGamePlay>().enabled = true;
                                 };
                                 GameObject.Find("360ViewTrainPopup").GetComponent<ViewTrainPopup>().OnExitPopup += () =>
                                 {
                                     UIManagers.Instance.DisableUIPopUp("360ViewTrainPopup");
                                     _playerManager.ActivePlayer();
                                     GameObject.Find("PlayerLocal").transform.position = GameObject.Find("SpawnPlayer").transform.position;
+                                    Cursor.lockState = CursorLockMode.Locked;
                                 };
                             }
                         }

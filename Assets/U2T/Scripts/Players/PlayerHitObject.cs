@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class PlayerHitObject : MonoBehaviour
 {
@@ -19,6 +20,7 @@ public class PlayerHitObject : MonoBehaviour
             Debug.Log(hit.collider.name);
             OnDetect?.Invoke(hit.collider.name,hit.collider.tag);
             _currentObjectHit = hit.gameObject;
+            Cursor.lockState = CursorLockMode.Confined;
             GameObject temp = GameObject.Find(hit.collider.name);
             Destroy(temp);
         }
@@ -29,6 +31,7 @@ public class PlayerHitObject : MonoBehaviour
             Debug.Log(hit.collider.name);
             OnDetect?.Invoke(hit.collider.name, hit.collider.tag);
             _currentObjectHit = hit.gameObject;
+            Cursor.lockState = CursorLockMode.Confined;
         }
 
         if (hit.collider.tag == "360View" && _playerHit)

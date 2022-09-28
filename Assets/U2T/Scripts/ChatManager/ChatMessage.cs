@@ -43,29 +43,36 @@ public class ChatMessage : MonoBehaviourPun
     {
         if ((Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.KeypadEnter)) && chatInputField.text != "")
         {
+            if (chatInputField.text.Length < 14)
+            {
+                ExplaneParentScale();
+                GameObject msgBox = Instantiate(Resources.Load("DialogBoxLocal") as GameObject);
+                msgBox.transform.parent = parent.transform;
+                msgBox.transform.localScale = new Vector3(1f, 1f, 1f);
+                msgBox.transform.GetChild(0).GetComponent<Text>().text = chatInputField.text + "  ";
+                currentText = chatInputField.text;
+                view.RPC("ISend", RpcTarget.Others, currentText);
+                chatInputField.text = "";
+                countMessage++;
+            }
+        }
+    }
+
+    public void SendMessageToOtherPlayerWithButton()
+    {
+        if (chatInputField.text.Length < 14)
+        {
             ExplaneParentScale();
             GameObject msgBox = Instantiate(Resources.Load("DialogBoxLocal") as GameObject);
             msgBox.transform.parent = parent.transform;
-            msgBox.transform.localScale = new Vector3(1f,1f,1f);
+            msgBox.transform.localScale = new Vector3(1f, 1f, 1f);
             msgBox.transform.GetChild(0).GetComponent<Text>().text = chatInputField.text + "  ";
             currentText = chatInputField.text;
             view.RPC("ISend", RpcTarget.Others, currentText);
             chatInputField.text = "";
             countMessage++;
         }
-    }
 
-    public void SendMessageToOtherPlayerWithButton()
-    {
-        ExplaneParentScale();
-        GameObject msgBox = Instantiate(Resources.Load("DialogBoxLocal") as GameObject);
-        msgBox.transform.parent = parent.transform;
-        msgBox.transform.localScale = new Vector3(1f, 1f, 1f);
-        msgBox.transform.GetChild(0).GetComponent<Text>().text = chatInputField.text + "  ";
-        currentText = chatInputField.text;
-        view.RPC("ISend", RpcTarget.Others, currentText);
-        chatInputField.text = "";
-        countMessage++;
     }
 
     private void ExplaneParentScale()

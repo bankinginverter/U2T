@@ -17,6 +17,8 @@ public class SpawnPlayer : MonoBehaviour
     void Start()
     {
         PhotonNetwork.Instantiate(save.GetCharacterID(),_spawnPoint.transform.position, Quaternion.identity);
+        //PhotonNetwork.Instantiate("Test", _spawnPoint.transform.position, Quaternion.identity);
+        //CharacterManagerInScene.Instance.OnOffCharacter(save.GetCharacterID());
     }
 
 }

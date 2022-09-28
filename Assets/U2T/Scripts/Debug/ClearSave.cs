@@ -14,5 +14,7 @@ public class ClearSave : MonoBehaviour
         save.SaveCheckIn3("");
         save.SaveCheckIn4("");
         save.SaveCheckInSuccess("");
+        save.SaveUserName("");
+        save.SavePassword("");
     }
 }

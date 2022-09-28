@@ -48,12 +48,12 @@ public class Login : MonoBehaviour
             ShowStatus("please enter your password");
             return;
         }
-        if (PasswordInCorrected())
-        {
-            Debug.Log("password or confirm password unmatch");
-            ShowStatus("password or confirm password unmatch");
-            return;
-        }
+        //if (PasswordInCorrected())
+        //{
+        //    Debug.Log("password or confirm password unmatch");
+        //    ShowStatus("password or confirm password unmatch");
+        //    return;
+        //}
         ShowStatus("Registed");
         FetchingData();
     }
